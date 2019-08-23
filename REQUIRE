@@ -1,0 +1,11 @@
+GLFW
+StaticArrays
+PyCall
+Rotations
+Parameters
+LinearAlgebra
+SparseArrays
+Plots
+ForwardDiff
+OSQP
+ControlSystems

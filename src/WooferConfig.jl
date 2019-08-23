@@ -1,22 +1,22 @@
 @with_kw struct WooferConfig
-	MASS::Float64 = 6.135
+	MASS::Float64 = 1.00
 
 	# Robot joint limits
-	MAX_JOINT_TORQUE::Float64 = 12
-	MAX_LEG_FORCE::Float64 = 133
-	REVOLUTE_RANGE::Float64 = 3
-	PRISMATIC_RANGE::Float64 = 0.18
+	MAX_JOINT_TORQUE::Float64 = 1.0
+	MAX_LEG_FORCE::Float64 = 15.0
+	REVOLUTE_RANGE::Float64 = 1.57
+	PRISMATIC_RANGE::Float64 = 0.125
 
 	# Robot geometry
-	LEG_FB::Float64 = 0.23			# front-back distance from center line to leg axis
-	LEG_LR::Float64 = 0.175 		# left-right distance from center line to leg plane
-	LEG_L::Float64  = 0.32
-	ABDUCTION_OFFSET::Float64 = 0	# distance from abduction axis to leg
-	FOOT_RADIUS::Float64 = 0.02
+	LEG_FB::Float64 = 0.10  # front-back distance from center line to leg axis
+	LEG_LR::Float64 = 0.0569  # left-right distance from center line to leg plane
+	LEG_L::Float64  = 0.125
+	ABDUCTION_OFFSET::Float64 = 0.027  # distance from abduction axis to leg
+	FOOT_RADIUS::Float64 = 0.01
 
-	L::Float64 = 0.66
-	W::Float64 = 0.176
-	T::Float64 = 0.092
+	L::Float64 = 0.276
+	W::Float64 = 0.100
+	T::Float64 = 0.050
 	Ix::Float64 = MASS/12 * (W^2 + T^2)
 	Iy::Float64 = MASS/12 * (L^2 + T^2)
 	Iz::Float64 = MASS/12 * (L^2 + W^2)

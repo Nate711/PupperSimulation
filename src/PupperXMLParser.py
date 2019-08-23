@@ -1,23 +1,23 @@
 import os
-import shutil
-from os.path import expanduser
 from PupperConfig import PUPPER_CONFIG, ENVIRONMENT_CONFIG, SOLVER_CONFIG
 
 
 def Parse():
-    ###### ROBOT PARAMETERS #####
+    # FILE PATHS
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    IN_FILE = os.path.join(dir_path, PUPPER_CONFIG.XML_IN)
+    OUT_FILE = os.path.join(dir_path, PUPPER_CONFIG.XML_OUT)
 
-    ## Solver params ##
-    pupper_timestep = ENVIRONMENT_CONFIG.DT  # timestep
-    pupper_joint_solref = "0.001 1"  # time constant and damping ratio for joints
-    pupper_joint_solimp = "0.9 0.95 0.001"  # joint constraint parameters
+    # ROBOT PARAMETERS
 
-    pupper_geom_solref = "0.005 2"  # time constant and damping ratio for geom contacts
-    pupper_geom_solimp = "0.9 0.95 0.001"  # geometry contact parameters
+    # Solver params
+    pupper_timestep = ENVIRONMENT_CONFIG.DT
+    pupper_joint_solref = SOLVER_CONFIG.JOINT_SOLREF
+    pupper_joint_solimp = SOLVER_CONFIG.JOINT_SOLIMP
+    pupper_geom_solref = SOLVER_CONFIG.GEOM_SOLREF
+    pupper_geom_solimp = SOLVER_CONFIG.GEOM_SOLIMP
 
-    pupper_armature = PUPPER_CONFIG.ARMATURE  # armature for joints [kgm2]
-
-    ## Geometry params ##
+    # Geometry params
     pupper_leg_radius = PUPPER_CONFIG.FOOT_RADIUS  # radius of leg capsule
     pupper_friction = ENVIRONMENT_CONFIG.MU  # friction between legs and ground
     pupper_half_size = "%s %s %s" % (
@@ -25,7 +25,8 @@ def Parse():
         PUPPER_CONFIG.W / 2,
         PUPPER_CONFIG.T / 2,
     )  # half-size of body box
-    pupper_leg_geom = "0 0 0 0 0 %s" % (-PUPPER_CONFIG.LEG_L)  # to-from leg geometry
+    # to-from leg geometry
+    pupper_leg_geom = "0 0 0 0 0 %s" % (-PUPPER_CONFIG.LEG_L)
     pupper_start_position = "0 0 %s" % (
         PUPPER_CONFIG.LEG_L + pupper_leg_radius
     )  # Initial position of the robot torso
@@ -37,23 +38,25 @@ def Parse():
 
     pupper_force_geom = "0 0 -0.34"
 
-    ## Mass/Inertia Params ##
-    pupper_frame_mass = PUPPER_CONFIG.FRAME_MASS
+    # Mass/Inertia Params
+    pupper_armature = PUPPER_CONFIG.ARMATURE  # armature for joints [kgm2]
+    pupper_frame_inertia = PUPPER_CONFIG.FRAME_INERTIA
+    pupper_module_inertia = PUPPER_CONFIG.MODULE_INERTIA
+    pupper_leg_inertia = PUPPER_CONFIG.LEG_INERTIA
 
-    pupper_frame_inertia = "0.0065733 0.074011 0.077763"
-    pupper_module_inertia = "0.002449 0.005043 0.006616 -0.001784 -.00002 -0.000007"
-    pupper_leg_inertia = "0.003575 0.006356 0.002973 -0.0001326 -0.0001079 -0.0002538"
+    # Joint & servo params
+    pupper_rev_kp = PUPPER_CONFIG.SERVO_REV_KP
+    pupper_prism_kp = PUPPER_CONFIG.SERVO_PRISM_KP
 
-    ## Joint params ##
     pupper_joint_range = "%s %s" % (
         -PUPPER_CONFIG.REVOLUTE_RANGE,
         PUPPER_CONFIG.REVOLUTE_RANGE,
     )  # joint range in rads for angular joints
-    pupper_joint_force_range = "%s %s" % (
+    pupper_rev_torque_range = "%s %s" % (
         -PUPPER_CONFIG.MAX_JOINT_TORQUE,
         PUPPER_CONFIG.MAX_JOINT_TORQUE,
     )  # force range for ab/ad and forward/back angular joints
-    pupper_ext_force_range = "%s %s" % (
+    pupper_prism_force_range = "%s %s" % (
         -PUPPER_CONFIG.MAX_LEG_FORCE,
         PUPPER_CONFIG.MAX_LEG_FORCE,
     )  # force range for radial/extension joint
@@ -61,31 +64,29 @@ def Parse():
         -PUPPER_CONFIG.PRISMATIC_RANGE,
         PUPPER_CONFIG.PRISMATIC_RANGE,
     )  # joint range for radial/extension joint
-    pupper_rad_damping = 15  # damping on radial/extension joint [N/m/s]
-    pupper_joint_damping = 0.2  # damping on ab/ad and f/b angular joints [Nm/rad/s]
+    pupper_rad_damping = (
+        PUPPER_CONFIG.REV_DAMPING
+    )  # damping on radial/extension joint [N/m/s]
+    pupper_joint_damping = (
+        PUPPER_CONFIG.PRISM_DAMPING
+    )  # damping on angular joints [Nm/rad/s]
 
-    ## Sensor Noise Parameters ##
+    # Sensor Noise Parameters #
     pupper_accel_noise = 0.01
     pupper_encoder_noise = 0.001
     pupper_gyro_noise = 0.02
     pupper_encoder_vel_noise = 0.01
     pupper_force_noise = 0
 
-    ###### FILE PATHS  #####
-
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    in_file = dir_path + "/pupper.xml"
-    out_file = dir_path + "/pupper_out.xml"
-
-    ### Parse the xml ###
+    # Parse the xml
     print("Parsing MuJoCo XML file:")
-    print("Input xml: %s" % in_file)
-    print("Output xml: %s" % out_file)
+    print("Input xml: %s" % IN_FILE)
+    print("Output xml: %s" % OUT_FILE)
 
-    with open(in_file, "r") as file:
+    with open(IN_FILE, "r") as file:
         filedata = file.read()
 
-    #### Replace variable names with values ####
+    # Replace variable names with values
 
     # Solver specs
     filedata = filedata.replace("pupper_timestep", str(pupper_timestep))
@@ -97,17 +98,21 @@ def Parse():
     filedata = filedata.replace("pupper_geom_solimp", str(pupper_geom_solimp))
 
     # Joint specs
-    filedata = filedata.replace("pupper_ext_force_range", str(pupper_ext_force_range))
+    filedata = filedata.replace(
+        "pupper_prism_force_range", str(pupper_prism_force_range)
+    )
     filedata = filedata.replace("pupper_ext_range", str(pupper_ext_range))
     filedata = filedata.replace("pupper_joint_range", str(pupper_joint_range))
-    filedata = filedata.replace(
-        "pupper_joint_force_range", str(pupper_joint_force_range)
-    )
+    filedata = filedata.replace("pupper_rev_torque_range", str(pupper_rev_torque_range))
     filedata = filedata.replace("pupper_rad_damping", str(pupper_rad_damping))
     filedata = filedata.replace("pupper_joint_damping", str(pupper_joint_damping))
 
+    # Servo specs
+    filedata = filedata.replace("pupper_rev_kp", str(pupper_rev_kp))
+    filedata = filedata.replace("pupper_prism_kp", str(pupper_prism_kp))
+
     # Geometry specs
-    filedata = filedata.replace("pupper_hip_bo", str(pupper_hip_bo))
+    filedata = filedata.replace("pupper_hip_box", str(pupper_hip_box))
     filedata = filedata.replace("pupper_frame_mass", str(PUPPER_CONFIG.FRAME_MASS))
     filedata = filedata.replace("pupper_module_mass", str(PUPPER_CONFIG.MODULE_MASS))
     filedata = filedata.replace("pupper_leg_mass", str(PUPPER_CONFIG.LEG_MASS))
@@ -137,7 +142,7 @@ def Parse():
     filedata = filedata.replace("pupper_force_noise", str(pupper_force_noise))
 
     # Write the xml file
-    with open(out_file, "w") as file:
+    with open(OUT_FILE, "w") as file:
         file.write(filedata)
 
 

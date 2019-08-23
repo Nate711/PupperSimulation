@@ -1,6 +1,5 @@
 using Parameters
 using LinearAlgebra
-using SparseArrays
 using StaticArrays
 using Rotations
 using Plots

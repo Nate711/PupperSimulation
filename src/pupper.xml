@@ -9,7 +9,7 @@
   <default>
     <joint armature="pupper_armature" solimplimit="pupper_joint_solimp" solreflimit="pupper_joint_solref" stiffness="0"/>
     <geom conaffinity="0" condim="3" contype="1" friction="pupper_friction .1 .1" rgba="0.8 0.6 .4 1" solimp="pupper_geom_solimp" solref="pupper_geom_solref"/>
-    <motor ctrllimited="true" forcelimited="true"/>
+    <position forcelimited="true"/>
   </default>
 
 	<option>
@@ -90,7 +90,7 @@
 
         <body name="fr" pos="0 -pupper_abduction_offset 0">
           <joint axis="0 1 0" name="fr_y" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_joint_damping"/>
-          <joint axis="0 0 1" name="fr_r" pos = "0 0 0" limited="true" range="-0.18 0.18" type = "slide" damping="pupper_rad_damping"/>
+          <joint axis="0 0 1" name="fr_r" pos = "0 0 0" limited="true" range="pupper_ext_range" type = "slide" damping="pupper_rad_damping"/>
 
 					<inertial pos="0 0 0" mass="pupper_leg_mass" fullinertia="pupper_leg_inertia"/>
 
@@ -107,7 +107,7 @@
 
         <body name="fl" pos="0 pupper_abduction_offset 0">
           <joint axis="0 1 0" name="fl_y" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_joint_damping"/>
-          <joint axis="0 0 1" name="fl_r" pos = "0 0 0" limited="true" range="-0.18 0.18" type = "slide" damping="pupper_rad_damping"/>
+          <joint axis="0 0 1" name="fl_r" pos = "0 0 0" limited="true" range="pupper_ext_range" type = "slide" damping="pupper_rad_damping"/>
 
 					<inertial pos="0 0 0" mass="pupper_leg_mass" fullinertia="pupper_leg_inertia"/>
 
@@ -124,7 +124,7 @@
 
         <body name="br" pos="0 -pupper_abduction_offset 0">
           <joint axis="0 1 0" name="br_y" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_joint_damping"/>
-          <joint axis="0 0 1" name="br_r" pos = "0 0 0" limited="true" range="-0.18 0.18" type = "slide" damping="pupper_rad_damping"/>
+          <joint axis="0 0 1" name="br_r" pos = "0 0 0" limited="true" range="pupper_ext_range" type = "slide" damping="pupper_rad_damping"/>
 
 					<inertial pos="0 0 0" mass="pupper_leg_mass" fullinertia="pupper_leg_inertia"/>
 
@@ -154,23 +154,21 @@
     </body>
   </worldbody>
 
-
-
   <actuator>
-    <position gear="1" joint="fr_x" name="fr_x" forcerange="pupper_joint_force_range" ctrlrange="pupper_joint_force_range"/>
-    <position gear="1" joint="fr_y" name="fr_y" forcerange="pupper_joint_force_range" ctrlrange="pupper_joint_force_range"/>
-    <position gear="1" joint="fr_r" name="fr_r" forcerange="pupper_ext_force_range" ctrlrange="pupper_ext_force_range"/>
+    <position gear="1" joint="fr_x" name="fr_x" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
+    <position gear="1" joint="fr_y" name="fr_y" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
+    <position gear="1" joint="fr_r" name="fr_r" kp="pupper_prism_kp" forcerange="pupper_prism_force_range"/>
 
-    <position gear="1" joint="fl_x" name="fl_x" forcerange="pupper_joint_force_range" ctrlrange="pupper_joint_force_range"/>
-    <position gear="1" joint="fl_y" name="fl_y" forcerange="pupper_joint_force_range" ctrlrange="pupper_joint_force_range"/>
-    <position gear="1" joint="fl_r" name="fl_r" forcerange="pupper_ext_force_range" ctrlrange="pupper_ext_force_range"/>
+    <position gear="1" joint="fl_x" name="fl_x" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
+    <position gear="1" joint="fl_y" name="fl_y" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
+    <position gear="1" joint="fl_r" name="fl_r" kp="pupper_prism_kp" forcerange="pupper_prism_force_range"/>
 
-    <position gear="1" joint="br_x" name="br_x" forcerange="pupper_joint_force_range" ctrlrange="pupper_joint_force_range"/>
-    <position gear="1" joint="br_y" name="br_y" forcerange="pupper_joint_force_range" ctrlrange="pupper_joint_force_range"/>
-    <position gear="1" joint="br_r" name="br_r" forcerange="pupper_ext_force_range" ctrlrange="pupper_ext_force_range"/>
+    <position gear="1" joint="br_x" name="br_x" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
+    <position gear="1" joint="br_y" name="br_y" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
+    <position gear="1" joint="br_r" name="br_r" kp="pupper_prism_kp" forcerange="pupper_prism_force_range"/>
 
-    <position gear="1" joint="bl_x" name="bl_x" forcerange="pupper_joint_force_range" ctrlrange="pupper_joint_force_range"/>
-    <position gear="1" joint="bl_y" name="bl_y" forcerange="pupper_joint_force_range" ctrlrange="pupper_joint_force_range"/>
-    <position gear="1" joint="bl_r" name="bl_r" forcerange="pupper_ext_force_range" ctrlrange="pupper_ext_force_range"/>
+    <position gear="1" joint="bl_x" name="bl_x" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
+    <position gear="1" joint="bl_y" name="bl_y" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
+    <position gear="1" joint="bl_r" name="bl_r" kp="pupper_prism_kp" forcerange="pupper_prism_force_range"/>
   </actuator>
 </mujoco>

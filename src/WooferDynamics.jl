@@ -1,6 +1,6 @@
 using ForwardDiff
 
-function legJacobian(αᵢ::Vector{Float64}, abduction_offset = 0)
+function legJacobian(αᵢ::Vector{Float64}, abduction_offset::Float64 = 0)
 	# ported from WooferDynamics.py
 	i = [1, 0, 0]
 	j = [0, 1, 0]
@@ -121,7 +121,7 @@ function inverseKinematics!(α::Vector{T}, r_body::Vector{T}, i::Int, n::Int = 5
 
 	# TODO:
 	=#
-	
+
 	r_guess = zeros(3)
 	eps = 1e-2
 

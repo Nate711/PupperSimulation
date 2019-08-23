@@ -9,19 +9,13 @@ using PyCall
 using Rotations
 using Parameters
 using LinearAlgebra
-using SparseArrays
 using Plots
 
 include("WooferDynamics.jl")
 include("WooferConfig.jl")
-include("WooferStateEstimator.jl")
-
-# include("MPCControllerDense.jl") # include this for dense MPC formulation
-include("MPCControllerSparse.jl") # include this for sparse MPC formulation
 include("Gait.jl")
 include("FootstepPlanner.jl")
 include("SwingLegController.jl")
-
 include("StandingPlanner.jl")
 
 
@@ -663,8 +657,8 @@ function simulate()
    pushfirst!(PyVector(pyimport("sys")."path"), @__DIR__)
 
    # parse MuJoCo XML file
-   # xmlparser = pyimport("PupperXMLParser")
-   # xmlparser.Parse()
+   xmlparser = pyimport("PupperXMLParser")
+   xmlparser.Parse()
 
    s = loadmodel("src/pupper_out.xml", 1200, 900)
 
@@ -674,7 +668,6 @@ function simulate()
    planning_dt = 0.04
 
    lower_dt = 0.001
-
 
    lqr_torques = zeros(12)
 
@@ -714,8 +707,8 @@ function simulate()
             # d.xfrc_applied[7:9] .= 10*randn(Float64, 3)
 
             if s.pert[].select > 0
-               # mjv_applyPerturbPose(m, d, s.pert, 0) # move mocap bodies only
-               # mjv_applyPerturbForce(m, d, s.pert)
+               mjv_applyPerturbPose(m, d, s.pert, 0) # move mocap bodies only
+               mjv_applyPerturbForce(m, d, s.pert)
             end
 
             t = d.d[].time
