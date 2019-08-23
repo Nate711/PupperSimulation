@@ -657,8 +657,8 @@ function simulate()
    pushfirst!(PyVector(pyimport("sys")."path"), @__DIR__)
 
    # parse MuJoCo XML file
-   xmlparser = pyimport("PupperXMLParser")
-   xmlparser.Parse()
+   # xmlparser = pyimport("PupperXMLParser")
+   # xmlparser.Parse()
 
    s = loadmodel("src/pupper_out.xml", 1200, 900)
 

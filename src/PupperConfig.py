@@ -7,58 +7,60 @@ class PupperConfig:
         self.XML_IN = "pupper.xml"
         self.XML_OUT = "pupper_out.xml"
 
-        # Robot joint limits
-        self.MAX_JOINT_TORQUE = 1.0
-        self.MAX_LEG_FORCE = 15
-        self.REVOLUTE_RANGE = 1.57
-        self.PRISMATIC_RANGE = 0.125
-
         # Robot geometry
         self.LEG_FB = 0.10  # front-back distance from center line to leg axis
-        self.LEG_LR = 0.0569  # left-right distance from center line to leg plane
+        self.LEG_LR = 0.0419  # left-right distance from center line to leg plane
         self.LEG_L = 0.125
-        self.ABDUCTION_OFFSET = 0.027  # distance from abduction axis to leg
+        self.ABDUCTION_OFFSET = 0.020  # distance from abduction axis to leg
         self.FOOT_RADIUS = 0.01
 
-        self.HIP_L = 0.06
-        self.HIP_W = 0.02
-        self.HIP_T = 0.02
-        self.HIP_OFFSET = 0.02
+        self.HIP_L = 0.0394
+        self.HIP_W = 0.0744
+        self.HIP_T = 0.0214
+        self.HIP_OFFSET = 0.0132
 
-        (self.L, self.W, self.T) = (0.276, 0.100, 0.050)
+        self.L = 0.276
+        self.W = 0.100
+        self.T = 0.050
 
         # Robot inertia params
-        self.FRAME_MASS = 0.800  # kg
-        self.MODULE_MASS = 0.030  # kg
+        self.FRAME_MASS = 0.560  # kg
+        self.MODULE_MASS = 0.080  # kg
         self.LEG_MASS = 0.030  # kg
-        self.MASS = self.FRAME_MASS + (self.MODULE_MASS + self.LEG_MASS)*4
-        Ix = self.MASS / 12 * (self.W ** 2 + self.T ** 2)
-        Iy = self.MASS / 12 * (self.L ** 2 + self.T ** 2)
-        Iz = self.MASS / 12 * (self.L ** 2 + self.W ** 2)
-        self.INERTIA = np.zeros((3, 3))
-        self.INERTIA[0, 0] = Ix
-        self.INERTIA[1, 1] = Iy
-        self.INERTIA[2, 2] = Iz
+        self.MASS = self.FRAME_MASS + (self.MODULE_MASS + self.LEG_MASS) * 4
 
-        self.FRAME_INERTIA = "0.0065733 0.074011 0.077763"
-        self.MODULE_INERTIA = "0.002449 0.005043 0.006616 -0.001784 -.00002 -0.000007"
-        self.LEG_INERTIA = "0.003575 0.006356 0.002973 -0.0001326 -0.0001079 -0.0002538"
-
-
+        # Compensation factor of 2 because the inertia measurement was just
+        # of the carbon fiber and plastic parts of the frame and did not
+        # include the hip servos and electronics
+        self.FRAME_INERTIA = tuple(
+            map(lambda x: 2.0 * x, (1.844e-4, 1.254e-3, 1.337e-3))
+        )
+        self.MODULE_INERTIA = (3.698e-5, 7.127e-6, 4.075e-5)
+        self.LEG_INERTIA = (2.253e-4, 6.493e-5, 2.502e-4)
 
         # Joint params
-        self.ARMATURE = 0.0024  # Inertia of rotational joints
+        G = 220  # Servo gear ratio
+        m_rotor = 0.008  # Servo rotor mass
+        r_rotor = 0.005  # Rotor radius
+        self.ARMATURE = G ** 2 * m_rotor * r_rotor ** 2  # Inertia of rotational joints
+        print("Servo armature", self.ARMATURE)
 
-        NATURAL_DAMPING = 0.01  # Damping resulting from friction
+        NATURAL_DAMPING = 0.03  # Damping resulting from friction
         ELECTRICAL_DAMPING = 0.049  # Damping resulting from back-EMF
         self.REV_DAMPING = (
             NATURAL_DAMPING + ELECTRICAL_DAMPING
         )  # Torque damping on the revolute joints
-        self.PRISM_DAMPING = 0.2  # Frictional damping on the prismatic joints
+        self.PRISM_DAMPING = 10.0  # Damping on the prismatic joints
 
         # Servo params
-        self.SERVO_REV_KP = 100  # Position gain [Nm/rad]
-        self.SERVO_PRISM_KP = 10000  # Position gain [N/m]
+        self.SERVO_REV_KP = 200  # Position gain [Nm/rad]
+        self.SERVO_PRISM_KP = 1000  # Position gain [N/m]
+
+        # Force limits
+        self.MAX_JOINT_TORQUE = 1.0
+        self.MAX_LEG_FORCE = 15
+        self.REVOLUTE_RANGE = 1.57
+        self.PRISMATIC_RANGE = 0.125
 
         # Noise
         self.JOINT_NOISE = 0.02  # Nm, 1 sigma of gaussian noise

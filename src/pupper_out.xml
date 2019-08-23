@@ -7,7 +7,7 @@
   <compiler angle="radian" coordinate="local" inertiafromgeom="false"/>
 
   <default>
-    <joint armature="0.0024" solimplimit="0.9 0.95 0.001" solreflimit="0.001 1" stiffness="0"/>
+    <joint armature="0.00968" solimplimit="0.9 0.95 0.001" solreflimit="0.001 1" stiffness="0"/>
     <geom conaffinity="0" condim="3" contype="1" friction="1.0 .1 .1" rgba="0.8 0.6 .4 1" solimp="0.9 0.95 0.001" solref="0.005 2"/>
     <position forcelimited="true"/>
   </default>
@@ -76,74 +76,74 @@
       <camera name="track" mode="trackcom" pos="0 -2 0.3" xyaxes="1 0 0 0 0 1"/>
       <joint armature="0" axis="1 0 0" damping="0" limited="false" name="rootx" pos="0 0 0" stiffness="0" type="free"/>
 
-			<inertial pos="0 0 0" mass="0.8" diaginertia="0.0065733 0.074011 0.077763"/>
+			<inertial pos="0 0 0" mass="0.56" diaginertia="0.0003688 0.002508 0.002674"/>
       <geom pos="0 0 0" name="torso" size="0.138 0.05 0.025" type="box"/>
 
 			<site name="imu_site" pos="0 0 0" size=".01 .01 .01" type="box"/>
 
-      <body name="fr_module" pos="0.1 -0.0569 0">
-        <geom pos="0 0.02 0" name="fr_block" type="box" size="0.06 0.02 0.02" rgba="0.6 0.8 .4 1"/>
+      <body name="fr_module" pos="0.1 -0.0419 0">
+        <geom pos="0 -0.0132 0" name="fr_block" type="box" size="0.0197 0.0372 0.0107" rgba="0.6 0.8 .4 1"/>
 
-        <joint axis="1 0 0" name="fr_x" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge" damping="0.2"/>
+        <joint axis="1 0 0" name="fr_x" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge" damping="0.079"/>
 
-				<inertial pos="0 0 0" mass="0.03" fullinertia="0.002449 0.005043 0.006616 -0.001784 -.00002 -0.000007"/>
+				<inertial pos="0 0 0" mass="0.08" diaginertia="3.698e-05 7.127e-06 4.075e-05"/>
 
-        <body name="fr" pos="0 -0.027 0">
-          <joint axis="0 1 0" name="fr_y" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge" damping="0.2"/>
-          <joint axis="0 0 1" name="fr_r" pos = "0 0 0" limited="true" range="-0.125 0.125" type = "slide" damping="0.059000000000000004"/>
+        <body name="fr" pos="0 -0.02 0">
+          <joint axis="0 1 0" name="fr_y" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge" damping="0.079"/>
+          <joint axis="0 0 1" name="fr_r" pos = "0 0 0" limited="true" range="-0.125 0.125" type = "slide" damping="10.0"/>
 
-					<inertial pos="0 0 0" mass="0.03" fullinertia="0.003575 0.006356 0.002973 -0.0001326 -0.0001079 -0.0002538"/>
+					<inertial pos="0 0 0" mass="0.03" diaginertia="0.0002253 6.493e-05 0.0002502"/>
 
 					<site name="fr_force_site" pos="0 0 -0.34" size=".01 .01 .01" type="box"/>
           <geom axisangle="0 1 0 0" name="fr" fromto="0 0 0 0 0 -0.125" size="0.01" type="capsule" rgba = "1 0 0 0.5" density="50"/>
         </body>
       </body>
 
-      <body name="fl_module" pos="0.1 0.0569 0">
-        <geom pos = "0 -0.02 0" name="fl_block" type="box" size="0.06 0.02 0.02" rgba="0.6 0.8 .4 1"/>
-        <joint axis="1 0 0" name="fl_x" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge" damping="0.2"/>
+      <body name="fl_module" pos="0.1 0.0419 0">
+        <geom pos = "0 0.0132 0" name="fl_block" type="box" size="0.0197 0.0372 0.0107" rgba="0.6 0.8 .4 1"/>
+        <joint axis="1 0 0" name="fl_x" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge" damping="0.079"/>
 
-				<inertial pos="0 0 0" mass="0.03" fullinertia="0.002449 0.005043 0.006616 -0.001784 -.00002 -0.000007"/>
+				<inertial pos="0 0 0" mass="0.08" diaginertia="3.698e-05 7.127e-06 4.075e-05"/>
 
-        <body name="fl" pos="0 0.027 0">
-          <joint axis="0 1 0" name="fl_y" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge" damping="0.2"/>
-          <joint axis="0 0 1" name="fl_r" pos = "0 0 0" limited="true" range="-0.125 0.125" type = "slide" damping="0.059000000000000004"/>
+        <body name="fl" pos="0 0.02 0">
+          <joint axis="0 1 0" name="fl_y" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge" damping="0.079"/>
+          <joint axis="0 0 1" name="fl_r" pos = "0 0 0" limited="true" range="-0.125 0.125" type = "slide" damping="10.0"/>
 
-					<inertial pos="0 0 0" mass="0.03" fullinertia="0.003575 0.006356 0.002973 -0.0001326 -0.0001079 -0.0002538"/>
+					<inertial pos="0 0 0" mass="0.03" diaginertia="0.0002253 6.493e-05 0.0002502"/>
 
 					<site name="fl_force_site" pos="0 0 -0.34" size=".01 .01 .01" type="box"/>
 					<geom axisangle="0 1 0 0" name="fl" fromto="0 0 0 0 0 -0.125" size="0.01" type="capsule" rgba = "1 0 0 0.5" density="50"/>
         </body>
       </body>
 
-      <body name="br_module" pos="-0.1 -0.0569 0">
-        <geom pos = "0 0.02 0" name="br_block" type="box" size="0.06 0.02 0.02" rgba="0.6 0.8 .4 1"/>
-        <joint axis="1 0 0" name="br_x" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge" damping="0.2"/>
+      <body name="br_module" pos="-0.1 -0.0419 0">
+        <geom pos = "0 -0.0132 0" name="br_block" type="box" size="0.0197 0.0372 0.0107" rgba="0.6 0.8 .4 1"/>
+        <joint axis="1 0 0" name="br_x" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge" damping="0.079"/>
 
-				<inertial pos="0 0 0" mass="0.03" fullinertia="0.002449 0.005043 0.006616 -0.001784 -.00002 -0.000007"/>
+				<inertial pos="0 0 0" mass="0.08" diaginertia="3.698e-05 7.127e-06 4.075e-05"/>
 
-        <body name="br" pos="0 -0.027 0">
-          <joint axis="0 1 0" name="br_y" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge" damping="0.2"/>
-          <joint axis="0 0 1" name="br_r" pos = "0 0 0" limited="true" range="-0.125 0.125" type = "slide" damping="0.059000000000000004"/>
+        <body name="br" pos="0 -0.02 0">
+          <joint axis="0 1 0" name="br_y" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge" damping="0.079"/>
+          <joint axis="0 0 1" name="br_r" pos = "0 0 0" limited="true" range="-0.125 0.125" type = "slide" damping="10.0"/>
 
-					<inertial pos="0 0 0" mass="0.03" fullinertia="0.003575 0.006356 0.002973 -0.0001326 -0.0001079 -0.0002538"/>
+					<inertial pos="0 0 0" mass="0.03" diaginertia="0.0002253 6.493e-05 0.0002502"/>
 
 					<site name="br_force_site" pos="0 0 -0.34" size=".01 .01 .01" type="box"/>
 					<geom axisangle="0 1 0 0" name="br" fromto="0 0 0 0 0 -0.125" size="0.01" type="capsule" rgba = "1 0 0 0.5" density="50"/>
         </body>
       </body>
 
-      <body name="bl_module" pos="-0.1 0.0569 0">
-        <geom pos = "0 -0.02 0" name="bl_block" type="box" size="0.06 0.02 0.02" rgba="0.6 0.8 .4 1"/>
-        <joint axis="1 0 0" name="bl_x" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge" damping="0.2"/>
+      <body name="bl_module" pos="-0.1 0.0419 0">
+        <geom pos = "0 0.0132 0" name="bl_block" type="box" size="0.0197 0.0372 0.0107" rgba="0.6 0.8 .4 1"/>
+        <joint axis="1 0 0" name="bl_x" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge" damping="0.079"/>
 
-				<inertial pos="0 0 0" mass="0.03" fullinertia="0.002449 0.005043 0.006616 -0.001784 -.00002 -0.000007"/>
+				<inertial pos="0 0 0" mass="0.08" diaginertia="3.698e-05 7.127e-06 4.075e-05"/>
 
-        <body name="bl" pos="0 0.027 0">
-          <joint axis="0 1 0" name="bl_y" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge" damping="0.2"/>
-          <joint axis="0 0 1" name="bl_r" pos = "0 0 0" limited="true" range="-0.125 0.125" type = "slide" damping="0.059000000000000004"/>
+        <body name="bl" pos="0 0.02 0">
+          <joint axis="0 1 0" name="bl_y" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge" damping="0.079"/>
+          <joint axis="0 0 1" name="bl_r" pos = "0 0 0" limited="true" range="-0.125 0.125" type = "slide" damping="10.0"/>
 
-					<inertial pos="0 0 0" mass="0.03" fullinertia="0.003575 0.006356 0.002973 -0.0001326 -0.0001079 -0.0002538"/>
+					<inertial pos="0 0 0" mass="0.03" diaginertia="0.0002253 6.493e-05 0.0002502"/>
 
 					<site name="bl_force_site" pos="0 0 -0.34" size=".01 .01 .01" type="box"/>
 					<geom axisangle="0 1 0 0" name="bl" fromto="0 0 0 0 0 -0.125" size="0.01" type="capsule" rgba = "1 0 0 0.5" density="50"/>
@@ -155,20 +155,20 @@
   </worldbody>
 
   <actuator>
-    <position gear="1" joint="fr_x" name="fr_x" kp="100" forcerange="-1.0 1.0"/>
-    <position gear="1" joint="fr_y" name="fr_y" kp="100" forcerange="-1.0 1.0"/>
-    <position gear="1" joint="fr_r" name="fr_r" kp="10000" forcerange="-15 15"/>
+    <position gear="1" joint="fr_x" name="fr_x" kp="200" forcerange="-1.0 1.0"/>
+    <position gear="1" joint="fr_y" name="fr_y" kp="200" forcerange="-1.0 1.0"/>
+    <position gear="1" joint="fr_r" name="fr_r" kp="1000" forcerange="-15 15"/>
 
-    <position gear="1" joint="fl_x" name="fl_x" kp="100" forcerange="-1.0 1.0"/>
-    <position gear="1" joint="fl_y" name="fl_y" kp="100" forcerange="-1.0 1.0"/>
-    <position gear="1" joint="fl_r" name="fl_r" kp="10000" forcerange="-15 15"/>
+    <position gear="1" joint="fl_x" name="fl_x" kp="200" forcerange="-1.0 1.0"/>
+    <position gear="1" joint="fl_y" name="fl_y" kp="200" forcerange="-1.0 1.0"/>
+    <position gear="1" joint="fl_r" name="fl_r" kp="1000" forcerange="-15 15"/>
 
-    <position gear="1" joint="br_x" name="br_x" kp="100" forcerange="-1.0 1.0"/>
-    <position gear="1" joint="br_y" name="br_y" kp="100" forcerange="-1.0 1.0"/>
-    <position gear="1" joint="br_r" name="br_r" kp="10000" forcerange="-15 15"/>
+    <position gear="1" joint="br_x" name="br_x" kp="200" forcerange="-1.0 1.0"/>
+    <position gear="1" joint="br_y" name="br_y" kp="200" forcerange="-1.0 1.0"/>
+    <position gear="1" joint="br_r" name="br_r" kp="1000" forcerange="-15 15"/>
 
-    <position gear="1" joint="bl_x" name="bl_x" kp="100" forcerange="-1.0 1.0"/>
-    <position gear="1" joint="bl_y" name="bl_y" kp="100" forcerange="-1.0 1.0"/>
-    <position gear="1" joint="bl_r" name="bl_r" kp="10000" forcerange="-15 15"/>
+    <position gear="1" joint="bl_x" name="bl_x" kp="200" forcerange="-1.0 1.0"/>
+    <position gear="1" joint="bl_y" name="bl_y" kp="200" forcerange="-1.0 1.0"/>
+    <position gear="1" joint="bl_r" name="bl_r" kp="1000" forcerange="-15 15"/>
   </actuator>
 </mujoco>

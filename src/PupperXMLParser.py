@@ -31,18 +31,18 @@ def Parse():
         PUPPER_CONFIG.LEG_L + pupper_leg_radius
     )  # Initial position of the robot torso
     pupper_hip_box = "%s %s %s" % (
-        PUPPER_CONFIG.HIP_L,
-        PUPPER_CONFIG.HIP_W,
-        PUPPER_CONFIG.HIP_T,
+        PUPPER_CONFIG.HIP_L / 2,
+        PUPPER_CONFIG.HIP_W / 2,
+        PUPPER_CONFIG.HIP_T / 2,
     )  # Size of the box representing the hip
 
     pupper_force_geom = "0 0 -0.34"
 
     # Mass/Inertia Params
     pupper_armature = PUPPER_CONFIG.ARMATURE  # armature for joints [kgm2]
-    pupper_frame_inertia = PUPPER_CONFIG.FRAME_INERTIA
-    pupper_module_inertia = PUPPER_CONFIG.MODULE_INERTIA
-    pupper_leg_inertia = PUPPER_CONFIG.LEG_INERTIA
+    pupper_frame_inertia = "%s %s %s" % PUPPER_CONFIG.FRAME_INERTIA
+    pupper_module_inertia = "%s %s %s" % PUPPER_CONFIG.MODULE_INERTIA
+    pupper_leg_inertia = "%s %s %s" % PUPPER_CONFIG.LEG_INERTIA
 
     # Joint & servo params
     pupper_rev_kp = PUPPER_CONFIG.SERVO_REV_KP
@@ -64,11 +64,11 @@ def Parse():
         -PUPPER_CONFIG.PRISMATIC_RANGE,
         PUPPER_CONFIG.PRISMATIC_RANGE,
     )  # joint range for radial/extension joint
-    pupper_rad_damping = (
-        PUPPER_CONFIG.REV_DAMPING
-    )  # damping on radial/extension joint [N/m/s]
-    pupper_joint_damping = (
+    pupper_prism_damping = (
         PUPPER_CONFIG.PRISM_DAMPING
+    )  # damping on radial/extension joint [N/m/s]
+    pupper_rev_damping = (
+        PUPPER_CONFIG.REV_DAMPING
     )  # damping on angular joints [Nm/rad/s]
 
     # Sensor Noise Parameters #
@@ -104,15 +104,14 @@ def Parse():
     filedata = filedata.replace("pupper_ext_range", str(pupper_ext_range))
     filedata = filedata.replace("pupper_joint_range", str(pupper_joint_range))
     filedata = filedata.replace("pupper_rev_torque_range", str(pupper_rev_torque_range))
-    filedata = filedata.replace("pupper_rad_damping", str(pupper_rad_damping))
-    filedata = filedata.replace("pupper_joint_damping", str(pupper_joint_damping))
+    filedata = filedata.replace("pupper_prism_damping", str(pupper_prism_damping))
+    filedata = filedata.replace("pupper_rev_damping", str(pupper_rev_damping))
 
     # Servo specs
     filedata = filedata.replace("pupper_rev_kp", str(pupper_rev_kp))
     filedata = filedata.replace("pupper_prism_kp", str(pupper_prism_kp))
 
     # Geometry specs
-    filedata = filedata.replace("pupper_hip_box", str(pupper_hip_box))
     filedata = filedata.replace("pupper_frame_mass", str(PUPPER_CONFIG.FRAME_MASS))
     filedata = filedata.replace("pupper_module_mass", str(PUPPER_CONFIG.MODULE_MASS))
     filedata = filedata.replace("pupper_leg_mass", str(PUPPER_CONFIG.LEG_MASS))

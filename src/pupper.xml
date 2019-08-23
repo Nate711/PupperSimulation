@@ -82,17 +82,17 @@
 			<site name="imu_site" pos="0 0 0" size=".01 .01 .01" type="box"/>
 
       <body name="fr_module" pos="pupper_leg_fb -pupper_leg_lr 0">
-        <geom pos="0 pupper_hip_offset 0" name="fr_block" type="box" size="pupper_hip_box" rgba="0.6 0.8 .4 1"/>
+        <geom pos="0 -pupper_hip_offset 0" name="fr_block" type="box" size="pupper_hip_box" rgba="0.6 0.8 .4 1"/>
 
-        <joint axis="1 0 0" name="fr_x" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_joint_damping"/>
+        <joint axis="1 0 0" name="fr_x" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_rev_damping"/>
 
-				<inertial pos="0 0 0" mass="pupper_module_mass" fullinertia="pupper_module_inertia"/>
+				<inertial pos="0 0 0" mass="pupper_module_mass" diaginertia="pupper_module_inertia"/>
 
         <body name="fr" pos="0 -pupper_abduction_offset 0">
-          <joint axis="0 1 0" name="fr_y" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_joint_damping"/>
-          <joint axis="0 0 1" name="fr_r" pos = "0 0 0" limited="true" range="pupper_ext_range" type = "slide" damping="pupper_rad_damping"/>
+          <joint axis="0 1 0" name="fr_y" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_rev_damping"/>
+          <joint axis="0 0 1" name="fr_r" pos = "0 0 0" limited="true" range="pupper_ext_range" type = "slide" damping="pupper_prism_damping"/>
 
-					<inertial pos="0 0 0" mass="pupper_leg_mass" fullinertia="pupper_leg_inertia"/>
+					<inertial pos="0 0 0" mass="pupper_leg_mass" diaginertia="pupper_leg_inertia"/>
 
 					<site name="fr_force_site" pos="pupper_force_geom" size=".01 .01 .01" type="box"/>
           <geom axisangle="0 1 0 0" name="fr" fromto="pupper_leg_geom" size="pupper_leg_radius" type="capsule" rgba = "1 0 0 0.5" density="50"/>
@@ -100,16 +100,16 @@
       </body>
 
       <body name="fl_module" pos="pupper_leg_fb pupper_leg_lr 0">
-        <geom pos = "0 -pupper_hip_offset 0" name="fl_block" type="box" size="pupper_hip_box" rgba="0.6 0.8 .4 1"/>
-        <joint axis="1 0 0" name="fl_x" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_joint_damping"/>
+        <geom pos = "0 pupper_hip_offset 0" name="fl_block" type="box" size="pupper_hip_box" rgba="0.6 0.8 .4 1"/>
+        <joint axis="1 0 0" name="fl_x" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_rev_damping"/>
 
-				<inertial pos="0 0 0" mass="pupper_module_mass" fullinertia="pupper_module_inertia"/>
+				<inertial pos="0 0 0" mass="pupper_module_mass" diaginertia="pupper_module_inertia"/>
 
         <body name="fl" pos="0 pupper_abduction_offset 0">
-          <joint axis="0 1 0" name="fl_y" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_joint_damping"/>
-          <joint axis="0 0 1" name="fl_r" pos = "0 0 0" limited="true" range="pupper_ext_range" type = "slide" damping="pupper_rad_damping"/>
+          <joint axis="0 1 0" name="fl_y" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_rev_damping"/>
+          <joint axis="0 0 1" name="fl_r" pos = "0 0 0" limited="true" range="pupper_ext_range" type = "slide" damping="pupper_prism_damping"/>
 
-					<inertial pos="0 0 0" mass="pupper_leg_mass" fullinertia="pupper_leg_inertia"/>
+					<inertial pos="0 0 0" mass="pupper_leg_mass" diaginertia="pupper_leg_inertia"/>
 
 					<site name="fl_force_site" pos="pupper_force_geom" size=".01 .01 .01" type="box"/>
 					<geom axisangle="0 1 0 0" name="fl" fromto="pupper_leg_geom" size="pupper_leg_radius" type="capsule" rgba = "1 0 0 0.5" density="50"/>
@@ -117,16 +117,16 @@
       </body>
 
       <body name="br_module" pos="-pupper_leg_fb -pupper_leg_lr 0">
-        <geom pos = "0 pupper_hip_offset 0" name="br_block" type="box" size="pupper_hip_box" rgba="0.6 0.8 .4 1"/>
-        <joint axis="1 0 0" name="br_x" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_joint_damping"/>
+        <geom pos = "0 -pupper_hip_offset 0" name="br_block" type="box" size="pupper_hip_box" rgba="0.6 0.8 .4 1"/>
+        <joint axis="1 0 0" name="br_x" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_rev_damping"/>
 
-				<inertial pos="0 0 0" mass="pupper_module_mass" fullinertia="pupper_module_inertia"/>
+				<inertial pos="0 0 0" mass="pupper_module_mass" diaginertia="pupper_module_inertia"/>
 
         <body name="br" pos="0 -pupper_abduction_offset 0">
-          <joint axis="0 1 0" name="br_y" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_joint_damping"/>
-          <joint axis="0 0 1" name="br_r" pos = "0 0 0" limited="true" range="pupper_ext_range" type = "slide" damping="pupper_rad_damping"/>
+          <joint axis="0 1 0" name="br_y" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_rev_damping"/>
+          <joint axis="0 0 1" name="br_r" pos = "0 0 0" limited="true" range="pupper_ext_range" type = "slide" damping="pupper_prism_damping"/>
 
-					<inertial pos="0 0 0" mass="pupper_leg_mass" fullinertia="pupper_leg_inertia"/>
+					<inertial pos="0 0 0" mass="pupper_leg_mass" diaginertia="pupper_leg_inertia"/>
 
 					<site name="br_force_site" pos="pupper_force_geom" size=".01 .01 .01" type="box"/>
 					<geom axisangle="0 1 0 0" name="br" fromto="pupper_leg_geom" size="pupper_leg_radius" type="capsule" rgba = "1 0 0 0.5" density="50"/>
@@ -134,16 +134,16 @@
       </body>
 
       <body name="bl_module" pos="-pupper_leg_fb pupper_leg_lr 0">
-        <geom pos = "0 -pupper_hip_offset 0" name="bl_block" type="box" size="pupper_hip_box" rgba="0.6 0.8 .4 1"/>
-        <joint axis="1 0 0" name="bl_x" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_joint_damping"/>
+        <geom pos = "0 pupper_hip_offset 0" name="bl_block" type="box" size="pupper_hip_box" rgba="0.6 0.8 .4 1"/>
+        <joint axis="1 0 0" name="bl_x" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_rev_damping"/>
 
-				<inertial pos="0 0 0" mass="pupper_module_mass" fullinertia="pupper_module_inertia"/>
+				<inertial pos="0 0 0" mass="pupper_module_mass" diaginertia="pupper_module_inertia"/>
 
         <body name="bl" pos="0 pupper_abduction_offset 0">
-          <joint axis="0 1 0" name="bl_y" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_joint_damping"/>
-          <joint axis="0 0 1" name="bl_r" pos = "0 0 0" limited="true" range="pupper_ext_range" type = "slide" damping="pupper_rad_damping"/>
+          <joint axis="0 1 0" name="bl_y" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_rev_damping"/>
+          <joint axis="0 0 1" name="bl_r" pos = "0 0 0" limited="true" range="pupper_ext_range" type = "slide" damping="pupper_prism_damping"/>
 
-					<inertial pos="0 0 0" mass="pupper_leg_mass" fullinertia="pupper_leg_inertia"/>
+					<inertial pos="0 0 0" mass="pupper_leg_mass" diaginertia="pupper_leg_inertia"/>
 
 					<site name="bl_force_site" pos="pupper_force_geom" size=".01 .01 .01" type="box"/>
 					<geom axisangle="0 1 0 0" name="bl" fromto="pupper_leg_geom" size="pupper_leg_radius" type="capsule" rgba = "1 0 0 0.5" density="50"/>
