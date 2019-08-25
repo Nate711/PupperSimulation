@@ -653,23 +653,37 @@ function loadmodel(modelfile, width, height)
 end
 
 function simulate()
-   # look at local directory
+   # Look at local directory
    pushfirst!(PyVector(pyimport("sys")."path"), @__DIR__)
 
-   # parse MuJoCo XML file
-   xmlparser = pyimport("PupperXMLParser")
-   xmlparser.Parse()
+   # Parse MuJoCo XML file
+   # xmlparser = pyimport("PupperXMLParser")
+   # xmlparser.Parse()
 
+   # Load robot model
    s = loadmodel("src/pupper_out.xml", 1200, 900)
 
    d = s.d
    m = s.m
 
-   planning_dt = 0.04
-
    lower_dt = 0.001
 
-   lqr_torques = zeros(12)
+   # The elements correspond to:
+   # [fr_x, fr_y, fr_ext,
+   #  fl_x, fl_y, fl_ext,
+   #  br_x, br_y, br_ext,
+   #  bl_x, bl_y, bl_ext]
+   #  fr = front-right
+   #  fl = front-left
+   #  br = back-right
+   #  bl = back-left
+   #  _x indicates rotation on the forward/back axis of the robot
+   #  _y indicates rotation on the left/right axis of the hip module
+   #  _ext indicates linear extension of the leg. Positive values = leg goes up
+
+   phaseL = 0.0
+   phaseR = 0.0
+   target_joint_positions = zeros(12)
 
    gait = GaitParams(num_phases=1, contact_phases=[1;1;1;1], phase_times=[1.0]) # standing gait
    # gait = GaitParams() # trot gait
@@ -715,8 +729,43 @@ function simulate()
 
             # lower level update loop (eg state estimation, torque updates)
             if t % lower_dt < 1e-3
+               # freq = 0.5
+               # ext_amp = 0.03
+               # roll_amp = 0.2
+               # # Set the leg extensions
+               # target_joint_positions[3] = sin(freq*2*pi*t)*ext_amp
+               # target_joint_positions[6] = sin(freq*2*pi*t)*ext_amp
+               #
+               # # Set the x-axis angle (roll angle) of the hip module
+               # target_joint_positions[1] = cos(freq*2*pi*t)*roll_amp
+               # target_joint_positions[4] = cos(freq*2*pi*t)*roll_amp
 
-               s.d.ctrl .= lqr_torques
+               freq = 1.0
+               T = 1.0/freq
+               ext_amp = 0.03
+               phaseR = freq * t * pi * 2
+               phaseL = phaseR
+
+               # Work in progress: walking trot
+               # if (t % T)/T < 0.3
+               #    phaseL .= phaseL + 0.7 * lower_dt
+               #    phaseR .= phaseR + 0.3 * lower_dt
+               # elseif (t % T)/T < 0.7
+               #    phaseL .= phaseL + 0.3 * lower_dt
+               #    phaseR .= phaseR + 0.3 * lower_dt
+               # else
+               #    phaseL .= phaseL + 0.3 * lower_dt
+               #    phaseR .= phaseR + 0.7 * lower_dt
+               # end
+
+               target_joint_positions[3] = max(sin(phaseL)^3 * ext_amp, 0)
+               target_joint_positions[6] = max(sin(phaseR + pi)^3 * ext_amp, 0)
+               target_joint_positions[9] = max(sin(phaseR + pi)^3 * ext_amp, 0)
+               target_joint_positions[12] = max(sin(phaseL)^3 * ext_amp, 0)
+
+
+
+               s.d.ctrl .= target_joint_positions
             end
 
             mj_step(s.m, s.d)

@@ -2,6 +2,20 @@
 
     The state space is populated with joints in the order that they are
     defined in this file.
+
+	The elements of the control variable s.d.ctrl correspond to:
+	[fr_x, fr_y, fr_ext,
+	 fl_x, fl_y, fl_ext,
+	 br_x, br_y, br_ext,
+	 bl_x, bl_y, bl_ext]
+
+	fr = front-right
+	fl = front-left
+	br = back-right
+	bl = back-left
+	_x indicates rotation on the forward/back axis of the robot
+	_y indicates rotation on the left/right axis of the hip module
+	_ext indicates linear extension of the leg. Positive values = leg goes up
 -->
 <mujoco model="cheetah">
   <compiler angle="radian" coordinate="local" inertiafromgeom="false"/>
