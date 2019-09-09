@@ -683,6 +683,8 @@ function simulate()
 
    phaseL = 0.0
    phaseR = 0.0
+
+   # Pre-allocate control vector
    target_joint_positions = zeros(12)
 
    gait = GaitParams(num_phases=1, contact_phases=[1;1;1;1], phase_times=[1.0]) # standing gait
@@ -719,7 +721,7 @@ function simulate()
             # add in noise like perturbations
             # d.xfrc_applied[7:9] .= [5, 5, -10]
             # d.xfrc_applied[7:9] .= 10*randn(Float64, 3)
-
+            
             if s.pert[].select > 0
                mjv_applyPerturbPose(m, d, s.pert, 0) # move mocap bodies only
                mjv_applyPerturbForce(m, d, s.pert)
