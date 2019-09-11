@@ -3,7 +3,7 @@ using Parameters
 using Rotations
 include("WooferConfig.jl")
 
-function legSide(i::Int)
+function legSide(i::Integer)
 	# Returns 1.0 if the leg is on the right and -1.0 if the leg is on the left
 	@assert i >= 1 && i <= 4
 	if i == 2 || i == 4
@@ -13,7 +13,7 @@ function legSide(i::Int)
 	end
 end
 
-function legFrontBack(i::Int)
+function legFrontBack(i::Integer)
 	@assert i>=1 && i <= 4
 	if i == 1 || i == 2
 		return 1.0
@@ -22,12 +22,12 @@ function legFrontBack(i::Int)
 	end
 end
 
-function assertValidLeg(i::Int)
+function assertValidLeg(i::Integer)
 	@assert i >= 1 && i <= 4
 	return nothing
 end
 
-function legForwardKinematics!(r_body::Vector{Float64}, α::Vector{Float64}, i::Int, config::WooferConfig)
+function legForwardKinematics!(r_body::Vector{Float64}, α::Vector{Float64}, i::Integer, config::WooferConfig)
 	assertValidLeg(i)
 
 	beta = α[1]
@@ -43,7 +43,7 @@ function legForwardKinematics!(r_body::Vector{Float64}, α::Vector{Float64}, i::
 	r_body .= RotXY(beta, theta) * unrotated
 end
 
-function legForwardKinematics(α::SVector{3, Float64}, i::Int, config::WooferConfig)
+function legForwardKinematics(α::SVector{3, Float64}, i::Integer, config::WooferConfig)
 	#=
 	Given the joint angles, return the vector from the hip to the foot in the body frame.
 
@@ -63,26 +63,26 @@ function legForwardKinematics(α::SVector{3, Float64}, i::Int, config::WooferCon
 	return RotXY(beta, theta) * unrotated_leg
 end
 
-function forwardKinematicsAll!(r_body::Vector{Float64}, α::Vector{Float64}, abduction_offset=0)
-	for i in 1:4
-		# leg pointing straight down
-		unrotated = [0, abduction_offset, -WOOFER_CONFIG.LEG_L + α[3*(i-1)+3]]
+# function forwardKinematicsAll!(r_body::Vector{Float64}, α::Vector{Float64}, abduction_offset=0)
+# 	for i in 1:4
+# 		# leg pointing straight down
+# 		unrotated = [0, abduction_offset, -WOOFER_CONFIG.LEG_L + α[3*(i-1)+3]]
 
-		# vector from leg hub to foot in body coordinates
-		p_i = RotXY( α[3*(i-1)+1], α[3*(i-1)+2]) * unrotated
-		if i==1
-			r_body[1:3] .= p_i + [WOOFER_CONFIG.LEG_FB, -WOOFER_CONFIG.LEG_LR, 0]
-		elseif i==2
-			r_body[4:6] .= p_i + [WOOFER_CONFIG.LEG_FB, WOOFER_CONFIG.LEG_LR, 0]
-		elseif i==3
-			r_body[7:9] .= p_i + [-WOOFER_CONFIG.LEG_FB, -WOOFER_CONFIG.LEG_LR, 0]
-		else
-			r_body[10:12] .= p_i + [-WOOFER_CONFIG.LEG_FB, WOOFER_CONFIG.LEG_LR, 0]
-		end
-	end
-end
+# 		# vector from leg hub to foot in body coordinates
+# 		p_i = RotXY( α[3*(i-1)+1], α[3*(i-1)+2]) * unrotated
+# 		if i==1
+# 			r_body[1:3] .= p_i + [WOOFER_CONFIG.LEG_FB, -WOOFER_CONFIG.LEG_LR, 0]
+# 		elseif i==2
+# 			r_body[4:6] .= p_i + [WOOFER_CONFIG.LEG_FB, WOOFER_CONFIG.LEG_LR, 0]
+# 		elseif i==3
+# 			r_body[7:9] .= p_i + [-WOOFER_CONFIG.LEG_FB, -WOOFER_CONFIG.LEG_LR, 0]
+# 		else
+# 			r_body[10:12] .= p_i + [-WOOFER_CONFIG.LEG_FB, WOOFER_CONFIG.LEG_LR, 0]
+# 		end
+# 	end
+# end
 
-function explicitLegInverseKinematics(r_body_foot::SVector{3, Float64}, i::Int, config::WooferConfig)
+function explicitLegInverseKinematics(r_body_foot::SVector{3, Float64}, i::Integer, config::WooferConfig)
 	assertValidLeg(i)
 
 	# Unpack vector from body to foot
@@ -117,7 +117,7 @@ function explicitLegInverseKinematics(r_body_foot::SVector{3, Float64}, i::Int, 
 	R_hip_foot = (R_hip_foot_yz ^ 2 + x ^ 2) ^ 0.5
 
 	# Leg extension
-	α3 = -R_hip_foot + config.LEG_L::Float64
+	α3 = -R_hip_foot + config.LEG_L
 
 	# Code if using the full five-bar linkage model
 	# # Angle between the leg links L1 and L2
