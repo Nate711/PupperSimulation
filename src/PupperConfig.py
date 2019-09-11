@@ -54,7 +54,7 @@ class PupperConfig:
 
         # Servo params
         self.SERVO_REV_KP = 200  # Position gain [Nm/rad]
-        self.SERVO_PRISM_KP = 1000  # Position gain [N/m]
+        self.SERVO_PRISM_KP = 5000  # Position gain [N/m]
 
         # Force limits
         self.MAX_JOINT_TORQUE = 1.0
