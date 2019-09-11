@@ -1,42 +1,50 @@
 using Parameters
+using StaticArrays
 
 @with_kw struct GaitParams
-	# Default == Trot
-
-	# add in a cyclic array for the phases?
+	# Default values are for a trotting gait
+	# There are four distinct phases for a trot
 	num_phases::Int64 = 4
 
-	# 4xnum_phase array of contacts for each gait phase
-	contact_phases::Array{Int64} = [1 1 1 0; 1 0 1 1; 1 0 1 1; 1 1 1 0]
-
-	phase_times::Vector{Float64} = [0.1, 0.25, 0.1, 0.25]
-
-	phase_length::Float64 = sum(phase_times)
+	# 4 x num_phase matrix of contacts for each gait phase
+	contact_phases::SMatrix{4, 4, Int64, 16} = SMatrix{4, 4, Int64, 16}(1, 1, 1, 1, 
+																		1, 0, 0, 1, 
+																		1, 1, 1, 1,
+																		0, 1, 1, 0)
+	overlaptime::Float64 = 0.1
+	swingtime::Float64 = 0.25
+	stancetime::Float64 = 2 * overlaptime + swingtime
+	phase_times::SVector{4, Float64} = SVector(overlaptime, swingtime, overlaptime, swingtime)
+	phase_length::Float64 = 2 * overlaptime + 2 * swingtime
 	alpha::Float64 = 0.5
 	beta::Float64 = 0
 end
 
-function getPhase(t::AbstractFloat, gait_params::GaitParams)
-	phase_time = t % gait_params.phase_length
+function getPhase(t::Float64, gait_params::GaitParams)
+	#=
+	Given the time, return the phase number.
+	t: Time
+	gait_params: Gait parameters specifying values including the phase times
+	=#
 
+	phase_time = t % gait_params.phase_length
+	phase_sum = 0
 	for i in 1:gait_params.num_phases
-		if phase_time < sum(gait_params.phase_times[1:i])
+		phase_sum = phase_sum + gait_params.phase_times[i]
+		if phase_time < phase_sum
 			return i
 		end
 	end
+	@assert false
+	return 0
 end
 
-function nextPhase(phase::Integer, gait_params::GaitParams)
-	if (phase == gait_params.num_phases)
-		return 1
-	else
-		return phase+1
-	end
-end
+function getContacts(t::Real, gait_params::GaitParams)
+	#=
+	Given the time, return an array specifying the feet in contact. 
+	t: Time
+	gait_params: Gait parameters specifying values including phase times and contacts
+	=#
 
-function coordinateExpander!(expanded::Vector, compact::Vector)
-	expanded[1:3] .= compact[1]
-	expanded[4:6] .= compact[2]
-	expanded[7:9] .= compact[3]
-	expanded[10:12] .= compact[4]
+	return gait_params.contact_phases[:, getPhase(t, gait_params)]
 end

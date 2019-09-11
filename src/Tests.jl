@@ -4,6 +4,8 @@ using StaticArrays
 
 include("WooferDynamics.jl")
 include("WooferConfig.jl")
+include("Gait.jl")
+include("StanceController.jl")
 
 function round_(a, dec)
     return map(x -> round(x, digits=dec), a)
@@ -128,12 +130,40 @@ function testAllInverseKinematics()
     helper(SMatrix{3,4}(zeros(3,4)), missing, do_assert=false)
 end
 
-# testStaticArrays()
-# testInverseKinematicsExplicit!()
-# testForwardKinematics!()
-# testForwardInverseAgreeance()
-testAllInverseKinematics()
+function testKinematics()
+    testInverseKinematicsExplicit!()
+    testForwardKinematics!()
+    testForwardInverseAgreeance()
+    testAllInverseKinematics()
+end
 
-# @time testInverseKinematicsExplicit!()
-# @time testForwardKinematics!()
-# @time testForwardInverseAgreeance()
+function testGait()
+    p = GaitParams()
+    # println("Gait params=",p)
+    t = 1.2
+    println("Timing for getPhase")
+    @time ph = getPhase(t, p)
+    # @code_warntype getPhase(t, p)
+    println("t=",t," phase=",ph)
+    @assert ph == 4
+    @assert getPhase(0.0, p) == 1
+    
+    println("Timing for getContacts")
+    @time c = getContacts(t, p)
+    # @code_warntype getContacts(t, p)
+    @assert typeof(c) == SArray{Tuple{4},Int64,1,4}
+    println("t=", t, " contacts=", c)
+end
+
+function TestStanceController()
+    c = StanceParams()
+    @time dp, dR = skiincrement(SVector(0.0, 0.0, 0.0), 0.0, -0.2, -0.1, 0.01, c)
+    @assert norm(dR - I(3)) < 1e-10
+    @assert norm(dp - [0, 0, -1e-3]) < 1e-10
+    @time dp, dR = skiincrement(SVector(0.0, 1.0, 0.0), -3.0, -0.2, -0.1, 0.005, c)
+end
+
+testGait()
+testKinematics()
+TestStanceController()
+testStaticArrays()
