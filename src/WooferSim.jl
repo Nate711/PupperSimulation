@@ -159,16 +159,18 @@ const keycmds = Dict{GLFW.Key, Function}(GLFW.KEY_F1=>(s)->begin  # help
                                          end,
                                          # continue with reset
                                          GLFW.KEY_BACKSPACE=>(s)->begin  # reset
-                                            mj_resetData(s.m.m, s.d.d)
-                                            if s.keyreset >= 0 && s.keyreset < s.m.m[].nkey
-                                               s.d[].time = s.m.key_time[s.keyreset+1]
-                                               s.d.qpos[:] = s.m.key_qpos[:,s.keyreset+1]
-                                               s.d.qvel[:] = s.m.key_qvel[:,s.keyreset+1]
-                                               s.d.act[:]  = s.m.key_act[:,s.keyreset+1]
-                                            end
-                                            mj_forward(s.m, s.d)
-                                            #profilerupdate()
-                                            sensorupdate(s)
+                                            GLFW.DestroyWindow(s.window)
+                                            return nothing
+                                          #   mj_resetData(s.m.m, s.d.d)
+                                          #   if s.keyreset >= 0 && s.keyreset < s.m.m[].nkey
+                                          #      s.d[].time = s.m.key_time[s.keyreset+1]
+                                          #      s.d.qpos[:] = s.m.key_qpos[:,s.keyreset+1]
+                                          #      s.d.qvel[:] = s.m.key_qvel[:,s.keyreset+1]
+                                          #      s.d.act[:]  = s.m.key_act[:,s.keyreset+1]
+                                          #   end
+                                          #   mj_forward(s.m, s.d)
+                                          #   #profilerupdate()
+                                          #   sensorupdate(s)
                                          end,
                                          GLFW.KEY_RIGHT=>(s)->begin  # step forward
                                             if s.paused
@@ -742,27 +744,37 @@ function simulate()
                # target_joint_positions[1] = cos(freq*2*pi*t)*roll_amp
                # target_joint_positions[4] = cos(freq*2*pi*t)*roll_amp
 
-               freq = 1.0
-               T = 1.0/freq
-               ext_amp = 0.03
-               phaseR = freq * t * pi * 2
-               phaseL = phaseR
+               ext_amp = 0.02
+               # phaseR = freq * t * pi * 2
+               # phaseL = phaseR
 
                # Work in progress: walking trot
-               # if (t % T)/T < 0.3
-               #    phaseL .= phaseL + 0.7 * lower_dt
-               #    phaseR .= phaseR + 0.3 * lower_dt
-               # elseif (t % T)/T < 0.7
-               #    phaseL .= phaseL + 0.3 * lower_dt
-               #    phaseR .= phaseR + 0.3 * lower_dt
-               # else
-               #    phaseL .= phaseL + 0.3 * lower_dt
-               #    phaseR .= phaseR + 0.7 * lower_dt
-               # end
+               Tstance = 0.1
+               Tswing = 0.3
+               T = Tstance*2 + Tswing*2
+               
+               ϕ = t % T
+               if (ϕ) < Tswing
+                  println(1)
+                  phaseL = ϕ/Tswing * π
+                  phaseR = 0.0
+               elseif (ϕ) < Tswing + Tstance
+                  println(2)
+                  phaseL = 0.0
+                  phaseR = 0.0
+               elseif (ϕ) < Tswing + Tstance + Tswing
+                  println(3)
+                  phaseL = 0.0
+                  phaseR = (ϕ - Tswing - Tstance) / Tswing * π
+               else 
+                  println(4)
+                  phaseL = 0.0
+                  phaseR = 0.0
+               end
 
                target_joint_positions[3] = max(sin(phaseL)^3 * ext_amp, 0)
-               target_joint_positions[6] = max(sin(phaseR + pi)^3 * ext_amp, 0)
-               target_joint_positions[9] = max(sin(phaseR + pi)^3 * ext_amp, 0)
+               target_joint_positions[6] = max(sin(phaseR)^3 * ext_amp, 0)
+               target_joint_positions[9] = max(sin(phaseR)^3 * ext_amp, 0)
                target_joint_positions[12] = max(sin(phaseL)^3 * ext_amp, 0)
 
 
