@@ -2,12 +2,9 @@ using Rotations
 using LinearAlgebra
 using StaticArrays
 
-@with_kw struct StanceParams
-    # Time constant in [sec] for the feet in stance to move towards the reference z height
-    ztimeconstant = 1.0
-end
+include("Types.jl")
 
-function skiincrement(vref::SVector{3, Float64}, wzref::Float64, zref::Float64, zmeas::Float64, dt::Float64, p::StanceParams)
+function skiincrement(vref::SVector{3, Float64}, wzref::Float64, zref::Float64, zmeas::Float64, p::StanceParams, cparams::ControllerParams)
     #=
     Given a desired positioning targets, find the discrete change in position and 
     orientation to the ski for the given timestep duration.
@@ -20,7 +17,7 @@ function skiincrement(vref::SVector{3, Float64}, wzref::Float64, zref::Float64, 
     p: stance controller parameters
     =#
 
-    Δp = vref * dt + SVector(0, 0, 1 / p.ztimeconstant * (zref - zmeas)) * dt
-    ΔR = RotZ(wzref * dt)
+    Δp = vref * cparams.dt + SVector(0, 0, 1 / p.ztimeconstant * (zref - zmeas)) * cparams.dt
+    ΔR = RotZ(wzref * cparams.dt)
     return (Δp, ΔR)
 end

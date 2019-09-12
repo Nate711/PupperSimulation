@@ -1,7 +1,7 @@
 using ForwardDiff
 using Parameters
 using Rotations
-include("WooferConfig.jl")
+include("PupperConfig.jl")
 
 function legSide(i::Integer)
 	# Returns 1.0 if the leg is on the right and -1.0 if the leg is on the left
@@ -13,21 +13,12 @@ function legSide(i::Integer)
 	end
 end
 
-function legFrontBack(i::Integer)
-	@assert i>=1 && i <= 4
-	if i == 1 || i == 2
-		return 1.0
-	else
-		return -1.0
-	end
-end
-
 function assertValidLeg(i::Integer)
 	@assert i >= 1 && i <= 4
 	return nothing
 end
 
-function legForwardKinematics!(r_body::Vector{Float64}, α::Vector{Float64}, i::Integer, config::WooferConfig)
+function legForwardKinematics!(r_body::Vector{Float64}, α::Vector{Float64}, i::Integer, config::PupperConfig)
 	assertValidLeg(i)
 
 	beta = α[1]
@@ -43,7 +34,7 @@ function legForwardKinematics!(r_body::Vector{Float64}, α::Vector{Float64}, i::
 	r_body .= RotXY(beta, theta) * unrotated
 end
 
-function legForwardKinematics(α::SVector{3, Float64}, i::Integer, config::WooferConfig)
+function legForwardKinematics(α::SVector{3, Float64}, i::Integer, config::PupperConfig)
 	#=
 	Given the joint angles, return the vector from the hip to the foot in the body frame.
 
@@ -57,7 +48,8 @@ function legForwardKinematics(α::SVector{3, Float64}, i::Integer, config::Woofe
 	beta = α[1]
 	theta = α[2]
 	r = α[3]
-	unrotated_leg = SVector(0.0, legSide(i) * config.ABDUCTION_OFFSET, -config.LEG_L + r)
+	y = config.ABDUCTION_OFFSETS[i]
+	unrotated_leg = SVector(0.0, y, -config.LEG_L + r)
 
 	# RotXY is equiv to an intrinsic rotation first around the x axis, and then the new y axis
 	return RotXY(beta, theta) * unrotated_leg
@@ -82,7 +74,7 @@ end
 # 	end
 # end
 
-function explicitLegInverseKinematics(r_body_foot::SVector{3, Float64}, i::Integer, config::WooferConfig)
+function explicitLegInverseKinematics(r_body_foot::SVector{3, Float64}, i::Integer, config::PupperConfig)
 	assertValidLeg(i)
 
 	# Unpack vector from body to foot
@@ -95,7 +87,7 @@ function explicitLegInverseKinematics(r_body_foot::SVector{3, Float64}, i::Integ
 	R_hip_foot_yz = (R_body_foot_yz ^ 2 - config.ABDUCTION_OFFSET ^ 2) ^ 0.5
 
 	# Ensure that the target point is reachable
-	@assert abs(config.ABDUCTION_OFFSET) <= R_body_foot_yz
+	@assert R_body_foot_yz >= abs(config.ABDUCTION_OFFSET)
 
 	# Interior angle of the right triangle formed in the y-z plane by the leg that is coincident to the ab/adduction axis
 	# For feet 2 (front left) and 4 (back left), the abduction offset is positive, for the right feet, the abduction offset is negative.
@@ -134,10 +126,11 @@ function explicitLegInverseKinematics(r_body_foot::SVector{3, Float64}, i::Integ
 	return SVector(α1, α2, α3)
 end
 
-function allLegsInverseKinematics(r_body_foot::SMatrix{3, 4, Float64}, config::WooferConfig)
+# Note: Still does 16 allocations
+function allLegsInverseKinematics(r_body_foot::SMatrix{3, 4, Float64}, config::PupperConfig)
 	α = zeros(MMatrix{3, 4, Float64})
 	for i in 1:4
-		body_offset = SVector{3,Float64}(legFrontBack(i) * config.LEG_FB, legSide(i) * config.LEG_LR, 0.0)
+		body_offset = config.LEG_ORIGINS[:, i]
 		α[:, i] = explicitLegInverseKinematics(r_body_foot[:, i] - body_offset, i, config)
 	end
 	s = SMatrix(α)

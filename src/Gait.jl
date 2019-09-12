@@ -1,24 +1,7 @@
 using Parameters
 using StaticArrays
 
-@with_kw struct GaitParams
-	# Default values are for a trotting gait
-	# There are four distinct phases for a trot
-	num_phases::Int64 = 4
-
-	# 4 x num_phase matrix of contacts for each gait phase
-	contact_phases::SMatrix{4, 4, Int64, 16} = SMatrix{4, 4, Int64, 16}(1, 1, 1, 1, 
-																		1, 0, 0, 1, 
-																		1, 1, 1, 1,
-																		0, 1, 1, 0)
-	overlaptime::Float64 = 0.1
-	swingtime::Float64 = 0.25
-	stancetime::Float64 = 2 * overlaptime + swingtime
-	phase_times::SVector{4, Float64} = SVector(overlaptime, swingtime, overlaptime, swingtime)
-	phase_length::Float64 = 2 * overlaptime + 2 * swingtime
-	alpha::Float64 = 0.5
-	beta::Float64 = 0
-end
+include("Types.jl")
 
 function getPhase(t::Float64, gait_params::GaitParams)
 	#=

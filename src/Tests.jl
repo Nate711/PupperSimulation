@@ -2,17 +2,20 @@ using LinearAlgebra
 using Profile
 using StaticArrays
 
-include("WooferDynamics.jl")
-include("WooferConfig.jl")
+include("Kinematics.jl")
+include("PupperConfig.jl")
 include("Gait.jl")
 include("StanceController.jl")
+include("SwingLegController.jl")
+include("Types.jl")
 
 function round_(a, dec)
     return map(x -> round(x, digits=dec), a)
 end
 
 function testInverseKinematicsExplicit!()
-    config = WooferConfig()
+    println("\n-------------- Testing Inverse Kinematics -----------")
+    config = PupperConfig()
     println("\nTesting Inverse Kinematics")
     function testHelper(r, alpha_true, i; do_assert=true)
         eps = 1e-6
@@ -35,7 +38,8 @@ function testInverseKinematicsExplicit!()
 end
 
 function testForwardKinematics!()
-    config = WooferConfig()
+    println("\n-------------- Testing Forward Kinematics -----------")
+    config = PupperConfig()
     println("\nTesting Forward Kinematics")
     function testHelper(alpha, r_true, i; do_assert=true)
         eps = 1e-6
@@ -60,7 +64,8 @@ function testForwardKinematics!()
 end
 
 function testForwardInverseAgreeance()
-    config = WooferConfig()
+    println("\n-------------- Testing Forward/Inverse Consistency -----------")
+    config = PupperConfig()
     println("\nTest forward/inverse consistency")
     eps = 1e-6
     for i in 1:10
@@ -76,6 +81,7 @@ function testForwardInverseAgreeance()
 end
 
 function testStaticArrays()
+    println("\n-------------- Comparing Arrays -----------")
     function helper(a::MVector{3, Float64})
         a[1] = 0.5
     end
@@ -105,9 +111,10 @@ function testStaticArrays()
 end
 
 function testAllInverseKinematics()
+    println("\n-------------- Testing Four Leg Inverse Kinematics -----------")
     function helper(r_body, alpha_true; do_assert=true)        
         println("Timing for allLegsInverseKinematics")
-        config = WooferConfig()
+        config = PupperConfig()
         @time alpha = allLegsInverseKinematics(SMatrix(r_body), config)
         println("r: ", r_body, " -> α: ", alpha)
         
@@ -115,7 +122,7 @@ function testAllInverseKinematics()
             @assert norm(alpha - alpha_true) < 1e-10
         end
     end
-    config = WooferConfig()
+    config = PupperConfig()
     f = config.LEG_FB
     l = config.LEG_LR
     s = -0.125
@@ -138,6 +145,7 @@ function testKinematics()
 end
 
 function testGait()
+    println("\n-------------- Testing Gait -----------")
     p = GaitParams()
     # println("Gait params=",p)
     t = 1.2
@@ -156,14 +164,48 @@ function testGait()
 end
 
 function TestStanceController()
+    println("\n-------------- Testing Stance Controller -----------")
     c = StanceParams()
-    @time dp, dR = skiincrement(SVector(0.0, 0.0, 0.0), 0.0, -0.2, -0.1, 0.01, c)
+    cparams = ControllerParams()
+    @time dp, dR = skiincrement(SVector(0.0, 0.0, 0.0), 0.0, -0.2, -0.1, c, cparams)
     @assert norm(dR - I(3)) < 1e-10
     @assert norm(dp - [0, 0, -1e-3]) < 1e-10
-    @time dp, dR = skiincrement(SVector(0.0, 1.0, 0.0), -3.0, -0.2, -0.1, 0.005, c)
+    @time dp, dR = skiincrement(SVector(0.0, 1.0, 0.0), -3.0, -0.2, -0.1, c, cparams)
+end
+
+function TestSwingLegController()
+    println("\n-------------- Testing Swing Leg Controller -----------")
+    swp = SwingParams()
+    stp = StanceParams()
+    gp = GaitParams()
+    p = ControllerParams()
+    println("Timing for swingheight:")
+    @time z = swingheight(0.125, swp, gp)
+    println("z clearance at t=1/2swingtime =>",z)
+    @assert abs(z - swp.z_clearance) < 1e-10
+
+    println("Timing for swingheight:")
+    @time z = swingheight(0, swp, gp)
+    println("Z clearance at t=0 =>",z)
+    @assert abs(z) < 1e-10
+
+    mvref = MovementReference(SVector(1.0, 0.0), 0, -0.18)
+    println("Timing for raibert tdlocations:")
+    @time l = raibert_tdlocations(swp, stp, gp, mvref)
+    target = stp.defaultstance .+ [gp.stancetime*0.5*1, 0, 0]
+    println("Touchdown locations =>", l, " <?=> ", target)
+    @assert norm(l - target) <= 1e-10
+    
+    fcurrent = SMatrix{3, 4, Float64}(stp.defaultstance)
+    mvref = MovementReference()
+    tswing = 0.125
+    println("Timing for swingfootlocation increment")
+    @time l = swingfootlocations(tswing, fcurrent, swp, stp, gp, mvref, p)
+    println(l)
 end
 
 testGait()
 testKinematics()
 TestStanceController()
 testStaticArrays()
+TestSwingLegController()
