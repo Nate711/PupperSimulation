@@ -689,7 +689,7 @@ function simulate()
    # Pre-allocate control vector
    target_joint_positions = zeros(12)
 
-   gait = GaitParams(num_phases=1, contact_phases=[1;1;1;1], phase_times=[1.0]) # standing gait
+   gait = GaitParams(numphases=1, contactphases=[1;1;1;1], phase_times=[1.0]) # standing gait
    # gait = GaitParams() # trot gait
    footstep_config = FootstepPlannerParams()
    swing_params = SwingLegParams()

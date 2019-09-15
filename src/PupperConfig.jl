@@ -12,10 +12,10 @@
 	LEG_LR::Float64 = 0.0569  # left-right distance from center line to leg plane
 	LEG_L::Float64  = 0.125
 
-	LEG_ORIGINS::SMatrix{3, 4, Float64} = SMatrix{3, 4, Float64}(	LEG_FB, -LEG_LR, 0,
-																	LEG_FB, LEG_LR, 0,
-																	-LEG_FB, -LEG_LR, 0,
-																	-LEG_FB, LEG_LR, 0)
+	LEG_ORIGINS::SMatrix{3, 4, Float64, 12} = SMatrix{3, 4, Float64, 12}(	LEG_FB, -LEG_LR, 0,
+																			LEG_FB, LEG_LR, 0,
+																			-LEG_FB, -LEG_LR, 0,
+																			-LEG_FB, LEG_LR, 0)
 
 	# Used only for the 4-bar linkage model of the leg
 	LEG_L1::Float64 = 0.1235

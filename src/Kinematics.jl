@@ -3,16 +3,6 @@ using Parameters
 using Rotations
 include("PupperConfig.jl")
 
-function legSide(i::Integer)
-	# Returns 1.0 if the leg is on the right and -1.0 if the leg is on the left
-	@assert i >= 1 && i <= 4
-	if i == 2 || i == 4
-		return 1.0
-	else
-		return -1.0
-	end
-end
-
 function assertValidLeg(i::Integer)
 	@assert i >= 1 && i <= 4
 	return nothing
@@ -74,7 +64,7 @@ end
 # 	end
 # end
 
-function explicitLegInverseKinematics(r_body_foot::SVector{3, Float64}, i::Integer, config::PupperConfig)
+function leg_explicitinversekinematics(r_body_foot::SVector{3, Float64}, i::Integer, config::PupperConfig)
 	assertValidLeg(i)
 
 	# Unpack vector from body to foot
@@ -91,7 +81,7 @@ function explicitLegInverseKinematics(r_body_foot::SVector{3, Float64}, i::Integ
 
 	# Interior angle of the right triangle formed in the y-z plane by the leg that is coincident to the ab/adduction axis
 	# For feet 2 (front left) and 4 (back left), the abduction offset is positive, for the right feet, the abduction offset is negative.
-	ϕ = acos(legSide(i) * config.ABDUCTION_OFFSET / R_body_foot_yz)
+	ϕ = acos(config.ABDUCTION_OFFSETS[i] / R_body_foot_yz)
 
 	# Angle of the y-z projection of the hip-to-foot vector, relative to the positive y-axis 
 	θ_ = atan(z, y)
@@ -126,13 +116,19 @@ function explicitLegInverseKinematics(r_body_foot::SVector{3, Float64}, i::Integ
 	return SVector(α1, α2, α3)
 end
 
-# Note: Still does 16 allocations
-function allLegsInverseKinematics(r_body_foot::SMatrix{3, 4, Float64}, config::PupperConfig)
-	α = zeros(MMatrix{3, 4, Float64})
+function fourlegs_inversekinematics(r_body_foot::SMatrix{3, 4, Float64}, config::PupperConfig)
+	#=
+	Compute the joint angles for all four robot legs.
+
+	Allocation-free.
+	=#
+	α = zeros(SMatrix{3, 4, Float64})
 	for i in 1:4
 		body_offset = config.LEG_ORIGINS[:, i]
-		α[:, i] = explicitLegInverseKinematics(r_body_foot[:, i] - body_offset, i, config)
+		temp::SVector{3, Float64} = leg_explicitinversekinematics(r_body_foot[:, i] - body_offset, i, config)
+		for j in 1:3
+			α = setindex(α, temp[j], LinearIndices(α)[j, i])
+		end
 	end
-	s = SMatrix(α)
-	return s
+	return α
 end

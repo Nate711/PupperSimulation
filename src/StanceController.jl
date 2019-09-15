@@ -4,20 +4,35 @@ using StaticArrays
 
 include("Types.jl")
 
-function skiincrement(vref::SVector{3, Float64}, wzref::Float64, zref::Float64, zmeas::Float64, p::StanceParams, cparams::ControllerParams)
+function skiincrement(zmeas::Float64, stanceparams::StanceParams, mvref::MovementReference, gaitparams::GaitParams)
     #=
     Given a desired positioning targets, find the discrete change in position and 
     orientation to the ski for the given timestep duration.
     
-    vref: desired body velocity
-    wzref: desired body z rotation rate
-    zref: desired body x height
-    zmeas: actual body z height
-    dt: closed loop dt
-    p: stance controller parameters
+    zmeas: actual body z coordinate
+    stanceparams: stance controller parameters
+    gaitparams: gait controller parameters
+    mvref: movement reference
     =#
 
-    Δp = vref * cparams.dt + SVector(0, 0, 1 / p.ztimeconstant * (zref - zmeas)) * cparams.dt
-    ΔR = RotZ(wzref * cparams.dt)
+    Δp = SVector(-mvref.vxyref[1], -mvref.vxyref[2], 1 / stanceparams.ztimeconstant * (mvref.zref - zmeas)) * gaitparams.dt
+    ΔR = RotZ(-mvref.wzref * gaitparams.dt)
     return (Δp, ΔR)
+end
+
+function stancefootlocations(stancefootlocations::SMatrix{3, 4, Float64}, stanceparams::StanceParams,  gaitparams::GaitParams, mvref::MovementReference)
+    zmeas = sum(stancefootlocations[3, :]) / length(stancefootlocations[3, :])
+    (Δp, ΔR) = skiincrement(zmeas, stanceparams, mvref, gaitparams)
+    incrementedlocations = ΔR * stancefootlocations .+ Δp
+    return incrementedlocations
+end
+
+function stancefootlocation(stancefootlocation::SVector{3, Float64}, stanceparams::StanceParams, gaitparams::GaitParams, mvref::MovementReference)
+    #=
+    Return the incremented location for a specific foot in stance.
+    =#
+    zmeas = stancefootlocation[3]
+    (Δp, ΔR) = skiincrement(zmeas, stanceparams, mvref, gaitparams)
+    incrementedlocation = ΔR * stancefootlocation .+ Δp
+    return incrementedlocation
 end
