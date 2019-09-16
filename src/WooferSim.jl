@@ -11,13 +11,8 @@ using Parameters
 using LinearAlgebra
 using Plots
 
-include("WooferDynamics.jl")
-include("WooferConfig.jl")
-include("Gait.jl")
-include("FootstepPlanner.jl")
-include("SwingLegController.jl")
-include("StandingPlanner.jl")
-
+include("Controller.jl")
+include("Types.jl")
 
 ##################################################### globals
 const fontscale = mj.FONTSCALE_200 # can be 100, 150, 200
@@ -659,8 +654,8 @@ function simulate()
    pushfirst!(PyVector(pyimport("sys")."path"), @__DIR__)
 
    # Parse MuJoCo XML file
-   # xmlparser = pyimport("PupperXMLParser")
-   # xmlparser.Parse()
+   xmlparser = pyimport("PupperXMLParser")
+   xmlparser.Parse()
 
    # Load robot model
    s = loadmodel("src/pupper_out.xml", 1200, 900)
@@ -668,31 +663,11 @@ function simulate()
    d = s.d
    m = s.m
 
-   lower_dt = 0.001
+   controller::Controller = Controller()
+   controller.mvref = MovementReference(vxyref=SVector(0.2,0.0), zref=-0.14, wzref=0.5)
 
-   # The elements correspond to:
-   # [fr_x, fr_y, fr_ext,
-   #  fl_x, fl_y, fl_ext,
-   #  br_x, br_y, br_ext,
-   #  bl_x, bl_y, bl_ext]
-   #  fr = front-right
-   #  fl = front-left
-   #  br = back-right
-   #  bl = back-left
-   #  _x indicates rotation on the forward/back axis of the robot
-   #  _y indicates rotation on the left/right axis of the hip module
-   #  _ext indicates linear extension of the leg. Positive values = leg goes up
-
-   phaseL = 0.0
-   phaseR = 0.0
-
-   # Pre-allocate control vector
-   target_joint_positions = zeros(12)
-
-   gait = GaitParams(numphases=1, contactphases=[1;1;1;1], phase_times=[1.0]) # standing gait
-   # gait = GaitParams() # trot gait
-   footstep_config = FootstepPlannerParams()
-   swing_params = SwingLegParams()
+   simulationsteps_per_controlstep::Int = round(controller.gaitparams.dt / m.m[].opt.timestep)
+   simulationstep::Int = 0
 
    # Loop until the user closes the window
    WooferSim.alignscale(s)
@@ -732,57 +707,13 @@ function simulate()
             t = d.d[].time
 
             # lower level update loop (eg state estimation, torque updates)
-            if t % lower_dt < 1e-3
-               # freq = 0.5
-               # ext_amp = 0.03
-               # roll_amp = 0.2
-               # # Set the leg extensions
-               # target_joint_positions[3] = sin(freq*2*pi*t)*ext_amp
-               # target_joint_positions[6] = sin(freq*2*pi*t)*ext_amp
-               #
-               # # Set the x-axis angle (roll angle) of the hip module
-               # target_joint_positions[1] = cos(freq*2*pi*t)*roll_amp
-               # target_joint_positions[4] = cos(freq*2*pi*t)*roll_amp
-
-               ext_amp = 0.02
-               # phaseR = freq * t * pi * 2
-               # phaseL = phaseR
-
-               # Work in progress: walking trot
-               Tstance = 0.1
-               Tswing = 0.3
-               T = Tstance*2 + Tswing*2
-               
-               ϕ = t % T
-               if (ϕ) < Tswing
-                  println(1)
-                  phaseL = ϕ/Tswing * π
-                  phaseR = 0.0
-               elseif (ϕ) < Tswing + Tstance
-                  println(2)
-                  phaseL = 0.0
-                  phaseR = 0.0
-               elseif (ϕ) < Tswing + Tstance + Tswing
-                  println(3)
-                  phaseL = 0.0
-                  phaseR = (ϕ - Tswing - Tstance) / Tswing * π
-               else 
-                  println(4)
-                  phaseL = 0.0
-                  phaseR = 0.0
-               end
-
-               target_joint_positions[3] = max(sin(phaseL)^3 * ext_amp, 0)
-               target_joint_positions[6] = max(sin(phaseR)^3 * ext_amp, 0)
-               target_joint_positions[9] = max(sin(phaseR)^3 * ext_amp, 0)
-               target_joint_positions[12] = max(sin(phaseL)^3 * ext_amp, 0)
-
-
-
-               s.d.ctrl .= target_joint_positions
+            if simulationstep % simulationsteps_per_controlstep == 0
+               stepcontroller!(controller)
+               s.d.ctrl .= controller.jointangles.data
             end
 
             mj_step(s.m, s.d)
+            simulationstep += 1
 
             # break on reset
             (d.d[].time < startsimtm) && break

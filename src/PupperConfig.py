@@ -40,12 +40,12 @@ class PupperConfig:
 
         # Joint params
         G = 220  # Servo gear ratio
-        m_rotor = 0.008  # Servo rotor mass
+        m_rotor = 0.016  # Servo rotor mass
         r_rotor = 0.005  # Rotor radius
         self.ARMATURE = G ** 2 * m_rotor * r_rotor ** 2  # Inertia of rotational joints
         print("Servo armature", self.ARMATURE)
 
-        NATURAL_DAMPING = 0.03  # Damping resulting from friction
+        NATURAL_DAMPING = 1.0  # Damping resulting from friction
         ELECTRICAL_DAMPING = 0.049  # Damping resulting from back-EMF
         self.REV_DAMPING = (
             NATURAL_DAMPING + ELECTRICAL_DAMPING
@@ -54,11 +54,11 @@ class PupperConfig:
 
         # Servo params
         self.SERVO_REV_KP = 200  # Position gain [Nm/rad]
-        self.SERVO_PRISM_KP = 5000  # Position gain [N/m]
+        self.SERVO_PRISM_KP = 1000  # Position gain [N/m]
 
         # Force limits
-        self.MAX_JOINT_TORQUE = 1.0
-        self.MAX_LEG_FORCE = 15
+        self.MAX_JOINT_TORQUE = 4.0
+        self.MAX_LEG_FORCE = 40
         self.REVOLUTE_RANGE = 1.57
         self.PRISMATIC_RANGE = 0.125
 
@@ -72,7 +72,7 @@ class EnvironmentConfig:
     def __init__(self):
         self.MU = 1.0  # coeff friction
         self.SIM_STEPS = 10000  # simulation steps to take
-        self.DT = 0.001  # timestep [s]
+        self.DT = 0.0001  # timestep [s]
 
 
 class GaitPlannerConfig:

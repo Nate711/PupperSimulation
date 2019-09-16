@@ -18,7 +18,7 @@ end
 @with_kw struct MovementReference
     vxyref::SVector{2, Float64} = SVector(0, 0)
     wzref::Float64 = 0
-    zref::Float64 = -0.18
+    zref::Float64 = -0.125
 end
 
 @with_kw struct ControllerParams
@@ -30,7 +30,7 @@ end
     # Time constant in [sec] for the feet in stance to move towards the reference z height
     ztimeconstant::Float64 = 1.0
     Δx::Float64 = 0.1
-    Δy::Float64 = 0.06
+    Δy::Float64 = 0.09
     defaultstance::SMatrix{3, 4, Float64, 12} = SMatrix{3,4, Float64}(	Δx, -Δy, 0,
                                                                    		Δx,  Δy, 0,
                                                                     	-Δx, -Δy, 0,
@@ -38,7 +38,7 @@ end
 end
 
 @with_kw struct SwingParams
-	zclearance::Float64 = 0.03
+	zclearance::Float64 = 0.01
 	Az::SMatrix{5, 5, Float64} = SMatrix{5,5}(	0, 1, 0, 4, 0.5^4,
 												0, 1, 0, 3, 0.5^3,
 												0, 1, 0, 2, 0.5^2,
@@ -62,8 +62,8 @@ end
 																	1, 0, 0, 1, 
 																	1, 1, 1, 1,
 																	0, 1, 1, 0)
-	overlapticks::Int = Int(0.1 / dt)
-	swingticks::Int = Int(0.25 / dt)
+	overlapticks::Int = round(0.1 / dt)
+	swingticks::Int = round(0.2 / dt)
 	stanceticks::Int = 2 * overlapticks + swingticks
 	phasetimes::SVector{4, Int} = SVector(overlapticks, swingticks, overlapticks, swingticks)
 	phaselength::Int = 2 * overlapticks + 2 * swingticks
