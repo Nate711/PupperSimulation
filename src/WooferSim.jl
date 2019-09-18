@@ -663,9 +663,31 @@ function simulate()
    d = s.d
    m = s.m
 
+   ################################ CONTROLLER CONFIGURATION ##############################
+   #= NOTES
+   vxyref: Reference velocity in the x and y directions
+   zref: Reference z coordinate of the feet during stance relative to the body
+   wzref: Reference angular velocity in the z axis (aka yaw)
+
+   zclearance: How far the robot should pick up its feet during swing. Relative to the ground.
+
+   Δx: Default x coordinate (front-back) of the feet if the robot were to stand still.  
+   Δy: Default y coordinate (side to side) of the feet if the robot were to stand still
+   =#
+
    controller::Controller = Controller()
-   controller.mvref = MovementReference(vxyref=SVector(0.0,0.0), zref=-0.1, wzref=0.5)
+
+   # Uncomment for Crab settings
+   # controller.mvref = MovementReference(vxyref=SVector(0.05,0.2), zref=-0.08, wzref=0.0)
+   # controller.swingparams = SwingParams(zclearance=0.02)
+   # controller.stanceparams = StanceParams(Δx=0.13, Δy=0.16)
+
+   # Uncomment for Puppy settings
+   controller.mvref = MovementReference(vxyref=SVector(0.0,0.15), zref=-0.15, wzref=-0.8)
    controller.swingparams = SwingParams(zclearance=0.02)
+   controller.stanceparams = StanceParams(Δx=0.1, Δy=0.09)
+
+   ################################ END CONTROLLER CONFIGURATION ###########################
 
    simulationsteps_per_controlstep::Int = round(controller.gaitparams.dt / m.m[].opt.timestep)
    simulationstep::Int = 0
