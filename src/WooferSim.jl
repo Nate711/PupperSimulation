@@ -664,7 +664,8 @@ function simulate()
    m = s.m
 
    controller::Controller = Controller()
-   controller.mvref = MovementReference(vxyref=SVector(0.2,0.0), zref=-0.14, wzref=0.5)
+   controller.mvref = MovementReference(vxyref=SVector(0.0,0.0), zref=-0.1, wzref=0.5)
+   controller.swingparams = SwingParams(zclearance=0.02)
 
    simulationsteps_per_controlstep::Int = round(controller.gaitparams.dt / m.m[].opt.timestep)
    simulationstep::Int = 0

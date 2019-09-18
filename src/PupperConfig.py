@@ -23,6 +23,8 @@ class PupperConfig:
         self.W = 0.100
         self.T = 0.050
 
+        self.START_HEIGHT = 0.2
+
         # Robot inertia params
         self.FRAME_MASS = 0.560  # kg
         self.MODULE_MASS = 0.080  # kg
@@ -50,7 +52,7 @@ class PupperConfig:
         self.REV_DAMPING = (
             NATURAL_DAMPING + ELECTRICAL_DAMPING
         )  # Torque damping on the revolute joints
-        self.PRISM_DAMPING = 10.0  # Damping on the prismatic joints
+        self.PRISM_DAMPING = 50.0  # Damping on the prismatic joints
 
         # Servo params
         self.SERVO_REV_KP = 200  # Position gain [Nm/rad]
@@ -70,7 +72,7 @@ class PupperConfig:
 
 class EnvironmentConfig:
     def __init__(self):
-        self.MU = 1.0  # coeff friction
+        self.MU = 2.0  # coeff friction
         self.SIM_STEPS = 10000  # simulation steps to take
         self.DT = 0.0001  # timestep [s]
 

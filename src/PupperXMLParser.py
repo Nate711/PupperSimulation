@@ -28,7 +28,7 @@ def Parse():
     # to-from leg geometry
     pupper_leg_geom = "0 0 0 0 0 %s" % (-PUPPER_CONFIG.LEG_L)
     pupper_start_position = "0 0 %s" % (
-        PUPPER_CONFIG.LEG_L + pupper_leg_radius
+        PUPPER_CONFIG.START_HEIGHT
     )  # Initial position of the robot torso
     pupper_hip_box = "%s %s %s" % (
         PUPPER_CONFIG.HIP_L / 2,
