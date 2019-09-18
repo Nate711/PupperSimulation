@@ -2,6 +2,7 @@ using LinearAlgebra
 using Profile
 using StaticArrays
 using Plots
+using BenchmarkTools
 
 include("Kinematics.jl")
 include("PupperConfig.jl")
@@ -278,7 +279,8 @@ end
 
 function testrun()
     println("Run timing")
-    @time footlochistory, jointanglehistory = run()
+    @btime footlochistory, jointanglehistory = run()
+    footlochistory, jointanglehistory = run()
     @code_warntype run()
     x = plot(footlochistory[1, :, :]', title="x")
     y = plot(footlochistory[2, :, :]', title="y")
@@ -304,7 +306,7 @@ function teststep()
 
     ticks = 1
     println("Timing for step!")
-    @time step(ticks, footlocations, swingparams, stanceparams, gaitparams, mvref, conparams)
+    @btime step($ticks, $footlocations, $swingparams, $stanceparams, $gaitparams, $mvref, $conparams)
     @code_warntype step(ticks, footlocations, swingparams, stanceparams, gaitparams, mvref, conparams)
 end
 
@@ -313,6 +315,6 @@ end
 # TestStanceController()
 # testStaticArrays()
 # TestSwingLegController()
-# teststep()
 
+# teststep()
 testrun()
