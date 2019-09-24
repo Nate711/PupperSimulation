@@ -1,4 +1,3 @@
-using ForwardDiff
 using Parameters
 using Rotations
 include("PupperConfig.jl")
