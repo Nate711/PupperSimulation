@@ -683,7 +683,11 @@ function simulate()
    # controller.stanceparams = StanceParams(Δx=0.13, Δy=0.16)
 
    # Uncomment for Puppy settings
-   controller.mvref = MovementReference(vxyref=SVector(0.0,0.15), zref=-0.15, wzref=-0.8)
+   # controller.mvref = MovementReference(vxyref=SVector(0.0,0.15), zref=-0.15, wzref=-0.8)
+   # controller.swingparams = SwingParams(zclearance=0.02)
+   # controller.stanceparams = StanceParams(Δx=0.1, Δy=0.09)
+
+   controller.mvref = MovementReference(vxyref=SVector(0.2,0.0), zref=-0.15, wzref=0.0)
    controller.swingparams = SwingParams(zclearance=0.02)
    controller.stanceparams = StanceParams(Δx=0.1, Δy=0.09)
 
@@ -733,6 +737,7 @@ function simulate()
             if simulationstep % simulationsteps_per_controlstep == 0
                stepcontroller!(controller)
                s.d.ctrl .= controller.jointangles.data
+               println(controller.jointangles[2, 1])
             end
 
             mj_step(s.m, s.d)

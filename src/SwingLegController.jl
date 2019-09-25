@@ -4,8 +4,6 @@ include("Types.jl")
 
 function raibert_tdlocations(swingparams::SwingParams, stanceparams::StanceParams, gaitparams::GaitParams, mvref::MovementReference)
 	#=
-	36 allocations
-
 	Use the raibert heuristic to find the touchdown locations for all legs as if they were all in swing
 	=#
 
@@ -20,8 +18,6 @@ end
 
 function raibert_tdlocation(legindex::Integer, swingparams::SwingParams, stanceparams::StanceParams, gaitparams::GaitParams, mvref::MovementReference)
 	#=
-	36 allocations due to raiberttdlocations
-
 	Use the raibert heuristic to find the touchdown location for a specific leg in swing.
 	=#
 	out::SVector{3, Float64} = raibert_tdlocations(swingparams, stanceparams, gaitparams, mvref)[:, legindex]
@@ -62,8 +58,6 @@ end
 
 function swingfootlocation(swingprop::Number, footlocation::SVector{3, Float64}, legindex::Integer, swingparams::SwingParams, stanceparams::StanceParams, gaitparams::GaitParams, mvref::MovementReference)
 	#=
-	Does 36 allocations due to raibert_tdlocation
-
 	Return the new location for a specific foot in swing.
 	
 	swingprop: Proportion of swing phase completed.
