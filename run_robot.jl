@@ -3,8 +3,8 @@ include("src/Controller.jl")
 
 @with_kw struct PWMParams
     pins::Matrix{Int} = reshape([2,18,2,2,2,2,2,2,2,2,2,2], 4, 3)
-    range::Int = 10000
-    frequency::Int = 320 # Hz
+    range::Int = 4000
+    frequency::Int = 50 # Hz
     min::Int = 1000 # minimum servo pulse width [us]
     max::Int = 2000 # maximum servo pulse width [us]
     middlepulsewidth::Int = (min + max) / 2
@@ -19,8 +19,9 @@ end
 function angle2dutycycle(angle::Float64, pwmparams::PWMParams, servoparams::ServoParams)
     normalizedangle = (angle - servoparams.neutralangle) / servoparams.anglerange
     pulsewidth_micros = normalizedangle * pwmparams.pulserange + pwmparams.middlepulsewidth
-    println(pulsewidth_micros)
-    return Int(round(pulsewidth_micros / 1e6 * pwmparams.frequency * pwmparams.range))
+    dutycycle = Int(round(pulsewidth_micros / 1e6 * pwmparams.frequency * pwmparams.range))
+    println(pulsewidth_micros, " ", dutycycle)
+    return dutycycle
 end
 
 function initializePWM(pi::Pi, pwmparams::PWMParams)
@@ -36,7 +37,7 @@ function sendservocommands(pi::Pi, pwmparams::PWMParams, servoparams::ServoParam
     for legindex in 1:4
         for axis in 1:3
             if legindex == 1 && axis == 2
-                println(jointangles[axis,legindex])
+                # println(jointangles[axis,legindex])
             end
             dutycycle = angle2dutycycle(jointangles[axis, legindex], pwmparams, servoparams)
             set_PWM_dutycycle(pi, pwmparams.pins[legindex, axis], dutycycle)
@@ -62,11 +63,11 @@ function main()
     controller.mvref =controller.mvref = MovementReference(vxyref=SVector(0.2,0.0), zref=-0.15, wzref=0.0)
     controller.swingparams = SwingParams(zclearance=0.02)
     controller.stanceparams = StanceParams(Δx=0.1, Δy=0.09)
-    
+    controller.gaitparams = GaitParams(dt=0.02)
     setup(piboard, pwmparams)
 
-    for i in 1:2000
-        sleep(0.001)
+    for i in 1:200
+        sleep(0.02)
         # TODO: Insert some sort of sleeping or waiting behavior
         loop(piboard, pwmparams, servoparams, controller)
         println()
