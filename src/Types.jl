@@ -52,7 +52,7 @@ end
 
 @with_kw struct GaitParams
 	# Default values are for a trotting gait
-	dt::Float64 = 0.001
+	dt::Float64 = 0.01
 
 	# There are four distinct phases for a trot
 	numphases::Int = 4
