@@ -654,8 +654,8 @@ function simulate()
    pushfirst!(PyVector(pyimport("sys")."path"), @__DIR__)
 
    # Parse MuJoCo XML file
-   xmlparser = pyimport("PupperXMLParser")
-   xmlparser.Parse()
+   # xmlparser = pyimport("PupperXMLParser")
+   # xmlparser.Parse()
 
    # Load robot model
    s = loadmodel("src/pupper_out.xml", 1200, 900)
@@ -687,9 +687,9 @@ function simulate()
    # controller.swingparams = SwingParams(zclearance=0.02)
    # controller.stanceparams = StanceParams(Δx=0.1, Δy=0.09)
 
-   controller.mvref = MovementReference(vxyref=SVector(0.2,0.0), zref=-0.15, wzref=0.0)
+   controller.mvref = MovementReference(vxyref=SVector(0.2,0.0), zref=-0.14, wzref=0.0)
    controller.swingparams = SwingParams(zclearance=0.02)
-   controller.stanceparams = StanceParams(Δx=0.1, Δy=0.09)
+   controller.stanceparams = StanceParams(Δx=0.1, Δy=0.11)
 
    ################################ END CONTROLLER CONFIGURATION ###########################
 
@@ -737,7 +737,9 @@ function simulate()
             if simulationstep % simulationsteps_per_controlstep == 0
                stepcontroller!(controller)
                s.d.ctrl .= controller.jointangles.data
-               println(controller.jointangles[2, 1])
+               
+               # Subtract the l1 joint angles from the l2 joint angles to fake the kinematics of the parallel linkage
+               s.d.ctrl[[3,6,9,12]] .= s.d.ctrl[[3,6,9,12]] - s.d.ctrl[[2,5,8,11]]
             end
 
             mj_step(s.m, s.d)

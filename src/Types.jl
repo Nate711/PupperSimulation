@@ -1,5 +1,6 @@
 using Parameters
 using LinearAlgebra
+using StaticArrays
 
 @with_kw mutable struct MovementCommand
     vxydes::MVector{2, Float64} = MVector(0, 0)

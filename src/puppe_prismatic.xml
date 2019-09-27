@@ -64,13 +64,10 @@ _ext indicates linear extension of the leg. Positive values = leg goes up
             <inertial pos="0 0 0" mass="pupper_module_mass" diaginertia="pupper_module_inertia"/>
             <body name="fr" pos="0 -pupper_abduction_offset 0">
                 <joint axis="0 1 0" name="fr_y" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_rev_damping"/>
+                <joint axis="0 0 1" name="fr_r" pos = "0 0 0" limited="true" range="pupper_ext_range" type = "slide" damping="pupper_prism_damping"/>
                 <inertial pos="0 0 0" mass="pupper_leg_mass" diaginertia="pupper_leg_inertia"/>
-                <geom axisangle="0 1 0 0" name="fr" fromto="pupper_l1_geom" size="pupper_leg_radius" type="capsule" rgba = "1 0 0 0.5" density="50"/>
-                <body name="fr2" pos="0 0 -pupper_l1_length">
-                    <joint axis="0 1 0" name="fr_y2" pos="0 0 0" limited="true" range="pupper_l2_joint_range" type="hinge" damping="pupper_rev_damping"/>
-                    <inertial pos="0 0 0" mass="pupper_leg_mass" diaginertia="pupper_leg_inertia"/>
-                    <geom axisangle="0 1 0 0" name="fr_l2" fromto="pupper_l2_geom" size="pupper_leg_radius" type="capsule" rgba="1 0 0 0.5" density="50"/>
-                </body>
+                <site name="fr_force_site" pos="pupper_force_geom" size=".01 .01 .01" type="box"/>
+                <geom axisangle="0 1 0 0" name="fr" fromto="pupper_leg_geom" size="pupper_leg_radius" type="capsule" rgba = "1 0 0 0.5" density="50"/>
             </body>
         </body>
 
@@ -80,13 +77,10 @@ _ext indicates linear extension of the leg. Positive values = leg goes up
             <inertial pos="0 0 0" mass="pupper_module_mass" diaginertia="pupper_module_inertia"/>
             <body name="fl" pos="0 pupper_abduction_offset 0">
                 <joint axis="0 1 0" name="fl_y" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_rev_damping"/>
+                <joint axis="0 0 1" name="fl_r" pos = "0 0 0" limited="true" range="pupper_ext_range" type = "slide" damping="pupper_prism_damping"/>
                 <inertial pos="0 0 0" mass="pupper_leg_mass" diaginertia="pupper_leg_inertia"/>
-                <geom axisangle="0 1 0 0" name="fl" fromto="pupper_l1_geom" size="pupper_leg_radius" type="capsule" rgba = "1 0 0 0.5" density="50"/>
-                <body name="fl2" pos="0 0 -pupper_l1_length">
-                    <joint axis="0 1 0" name="fl_y2" pos="0 0 0" limited="true" range="pupper_l2_joint_range" type="hinge" damping="pupper_rev_damping"/>
-                    <inertial pos="0 0 0" mass="pupper_leg_mass" diaginertia="pupper_leg_inertia"/>
-                    <geom axisangle="0 1 0 0" name="fl_l2" fromto="pupper_l2_geom" size="pupper_leg_radius" type="capsule" rgba="1 0 0 0.5" density="50"/>
-                </body>
+                <site name="fl_force_site" pos="pupper_force_geom" size=".01 .01 .01" type="box"/>
+                <geom axisangle="0 1 0 0" name="fl" fromto="pupper_leg_geom" size="pupper_leg_radius" type="capsule" rgba = "1 0 0 0.5" density="50"/>
             </body>
         </body>
 
@@ -96,13 +90,10 @@ _ext indicates linear extension of the leg. Positive values = leg goes up
             <inertial pos="0 0 0" mass="pupper_module_mass" diaginertia="pupper_module_inertia"/>
             <body name="br" pos="0 -pupper_abduction_offset 0">
                 <joint axis="0 1 0" name="br_y" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_rev_damping"/>
+                <joint axis="0 0 1" name="br_r" pos = "0 0 0" limited="true" range="pupper_ext_range" type = "slide" damping="pupper_prism_damping"/>
                 <inertial pos="0 0 0" mass="pupper_leg_mass" diaginertia="pupper_leg_inertia"/>
-                <geom axisangle="0 1 0 0" name="br" fromto="pupper_l1_geom" size="pupper_leg_radius" type="capsule" rgba = "1 0 0 0.5" density="50"/>
-                <body name="br2" pos="0 0 -pupper_l1_length">
-                    <joint axis="0 1 0" name="br_y2" pos="0 0 0" limited="true" range="pupper_l2_joint_range" type="hinge" damping="pupper_rev_damping"/>
-                    <inertial pos="0 0 0" mass="pupper_leg_mass" diaginertia="pupper_leg_inertia"/>
-                    <geom axisangle="0 1 0 0" name="br_l2" fromto="pupper_l2_geom" size="pupper_leg_radius" type="capsule" rgba="1 0 0 0.5" density="50"/>
-                </body>
+                <site name="br_force_site" pos="pupper_force_geom" size=".01 .01 .01" type="box"/>
+                <geom axisangle="0 1 0 0" name="br" fromto="pupper_leg_geom" size="pupper_leg_radius" type="capsule" rgba = "1 0 0 0.5" density="50"/>
             </body>
         </body>
 
@@ -112,13 +103,10 @@ _ext indicates linear extension of the leg. Positive values = leg goes up
             <inertial pos="0 0 0" mass="pupper_module_mass" diaginertia="pupper_module_inertia"/>
             <body name="bl" pos="0 pupper_abduction_offset 0">
                 <joint axis="0 1 0" name="bl_y" pos="0 0 0" limited="true" range="pupper_joint_range" type="hinge" damping="pupper_rev_damping"/>
+                <joint axis="0 0 1" name="bl_r" pos = "0 0 0" limited="true" range="pupper_ext_range" type = "slide" damping="pupper_prism_damping"/>
                 <inertial pos="0 0 0" mass="pupper_leg_mass" diaginertia="pupper_leg_inertia"/>
-                <geom axisangle="0 1 0 0" name="bl" fromto="pupper_l1_geom" size="pupper_leg_radius" type="capsule" rgba = "1 0 0 0.5" density="50"/>
-                <body name="bl2" pos="0 0 -pupper_l1_length">
-                    <joint axis="0 1 0" name="bl_y2" pos="0 0 0" limited="true" range="pupper_l2_joint_range" type="hinge" damping="pupper_rev_damping"/>
-                    <inertial pos="0 0 0" mass="pupper_leg_mass" diaginertia="pupper_leg_inertia"/>
-                    <geom axisangle="0 1 0 0" name="bl_l2" fromto="pupper_l2_geom" size="pupper_leg_radius" type="capsule" rgba="1 0 0 0.5" density="50"/>
-                </body>
+                <site name="bl_force_site" pos="pupper_force_geom" size=".01 .01 .01" type="box"/>
+                <geom axisangle="0 1 0 0" name="bl" fromto="pupper_leg_geom" size="pupper_leg_radius" type="capsule" rgba = "1 0 0 0.5" density="50"/>
             </body>
         </body>
     </body>
@@ -127,18 +115,18 @@ _ext indicates linear extension of the leg. Positive values = leg goes up
 <actuator>
     <position gear="1" joint="fr_x" name="fr_x" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
     <position gear="1" joint="fr_y" name="fr_y" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
-    <position gear="1" joint="fr_y2" name="fr_y2" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
+    <position gear="1" joint="fr_r" name="fr_r" kp="pupper_prism_kp" forcerange="pupper_prism_force_range"/>
 
     <position gear="1" joint="fl_x" name="fl_x" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
     <position gear="1" joint="fl_y" name="fl_y" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
-    <position gear="1" joint="fl_y2" name="fl_y2" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
+    <position gear="1" joint="fl_r" name="fl_r" kp="pupper_prism_kp" forcerange="pupper_prism_force_range"/>
 
     <position gear="1" joint="br_x" name="br_x" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
     <position gear="1" joint="br_y" name="br_y" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
-    <position gear="1" joint="br_y2" name="br_y2" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
+    <position gear="1" joint="br_r" name="br_r" kp="pupper_prism_kp" forcerange="pupper_prism_force_range"/>
 
     <position gear="1" joint="bl_x" name="bl_x" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
     <position gear="1" joint="bl_y" name="bl_y" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
-    <position gear="1" joint="bl_y2" name="bl_y2" kp="pupper_rev_kp" forcerange="pupper_rev_torque_range"/>
+    <position gear="1" joint="bl_r" name="bl_r" kp="pupper_prism_kp" forcerange="pupper_prism_force_range"/>
     </actuator>
 </mujoco>

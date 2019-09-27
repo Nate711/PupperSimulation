@@ -27,6 +27,9 @@ def Parse():
     )  # half-size of body box
     # to-from leg geometry
     pupper_leg_geom = "0 0 0 0 0 %s" % (-PUPPER_CONFIG.LEG_L)
+    pupper_l1_geom = "0 0 0 0 0 %s" % (-PUPPER_CONFIG.LEG_L1)
+    pupper_l2_geom = "0 0 0 0 0 %s" % (-PUPPER_CONFIG.LEG_L2)
+
     pupper_start_position = "0 0 %s" % (
         PUPPER_CONFIG.START_HEIGHT
     )  # Initial position of the robot torso
@@ -52,6 +55,10 @@ def Parse():
         -PUPPER_CONFIG.REVOLUTE_RANGE,
         PUPPER_CONFIG.REVOLUTE_RANGE,
     )  # joint range in rads for angular joints
+    pupper_l2_joint_range = "%s %s" % (
+        -PUPPER_CONFIG.REVOLUTE_RANGE - PUPPER_CONFIG.REVOLUTE_RANGE,
+        PUPPER_CONFIG.REVOLUTE_RANGE - PUPPER_CONFIG.REVOLUTE_RANGE
+    )  # joint range for l2 knee joint
     pupper_rev_torque_range = "%s %s" % (
         -PUPPER_CONFIG.MAX_JOINT_TORQUE,
         PUPPER_CONFIG.MAX_JOINT_TORQUE,
@@ -103,6 +110,7 @@ def Parse():
     )
     filedata = filedata.replace("pupper_ext_range", str(pupper_ext_range))
     filedata = filedata.replace("pupper_joint_range", str(pupper_joint_range))
+    filedata = filedata.replace("pupper_l2_joint_range", str(pupper_l2_joint_range))
     filedata = filedata.replace("pupper_rev_torque_range", str(pupper_rev_torque_range))
     filedata = filedata.replace("pupper_prism_damping", str(pupper_prism_damping))
     filedata = filedata.replace("pupper_rev_damping", str(pupper_rev_damping))
@@ -130,6 +138,14 @@ def Parse():
     filedata = filedata.replace(
         "pupper_abduction_offset", str(PUPPER_CONFIG.ABDUCTION_OFFSET)
     )
+    filedata = filedata.replace(
+        "pupper_l1_length", str(PUPPER_CONFIG.LEG_L1)
+    )
+    filedata = filedata.replace(
+        "pupper_l2_length", str(PUPPER_CONFIG.LEG_L2)
+    )
+    filedata = filedata.replace("pupper_l1_geom", str(pupper_leg_geom))
+    filedata = filedata.replace("pupper_l2_geom", str(pupper_leg_geom))
 
     # Sensor noise
     filedata = filedata.replace("pupper_accel_noise", str(pupper_accel_noise))

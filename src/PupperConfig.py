@@ -11,6 +11,8 @@ class PupperConfig:
         self.LEG_FB = 0.10  # front-back distance from center line to leg axis
         self.LEG_LR = 0.0419  # left-right distance from center line to leg plane
         self.LEG_L = 0.125
+        self.LEG_L2 = 0.125
+        self.LEG_L1 = 0.1235
         self.ABDUCTION_OFFSET = 0.020  # distance from abduction axis to leg
         self.FOOT_RADIUS = 0.01
 
@@ -45,21 +47,19 @@ class PupperConfig:
         m_rotor = 0.016  # Servo rotor mass
         r_rotor = 0.005  # Rotor radius
         self.ARMATURE = G ** 2 * m_rotor * r_rotor ** 2  # Inertia of rotational joints
-        print("Servo armature", self.ARMATURE)
+        # print("Servo armature", self.ARMATURE)
 
-        NATURAL_DAMPING = 1.0  # Damping resulting from friction
+        NATURAL_DAMPING = 2.0  # Damping resulting from friction
         ELECTRICAL_DAMPING = 0.049  # Damping resulting from back-EMF
-        self.REV_DAMPING = (
-            NATURAL_DAMPING + ELECTRICAL_DAMPING
-        )  # Torque damping on the revolute joints
+        self.REV_DAMPING = NATURAL_DAMPING + ELECTRICAL_DAMPING # Torque damping on the revolute joints
         self.PRISM_DAMPING = 50.0  # Damping on the prismatic joints
 
         # Servo params
-        self.SERVO_REV_KP = 200  # Position gain [Nm/rad]
+        self.SERVO_REV_KP = 100  # Position gain [Nm/rad]
         self.SERVO_PRISM_KP = 1000  # Position gain [N/m]
 
         # Force limits
-        self.MAX_JOINT_TORQUE = 4.0
+        self.MAX_JOINT_TORQUE = 2.0
         self.MAX_LEG_FORCE = 40
         self.REVOLUTE_RANGE = 1.57
         self.PRISMATIC_RANGE = 0.125

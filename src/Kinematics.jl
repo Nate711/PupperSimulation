@@ -63,7 +63,7 @@ end
 # 	end
 # end
 
-function leg_explicitinversekinematics(r_body_foot::SVector{3, Float64}, i::Integer, config::PupperConfig)
+function leg_explicitinversekinematics_prismatic(r_body_foot::SVector{3, Float64}, i::Integer, config::PupperConfig)
 	assertValidLeg(i)
 
 	# Unpack vector from body to foot
@@ -100,18 +100,51 @@ function leg_explicitinversekinematics(r_body_foot::SVector{3, Float64}, i::Inte
 	# Leg extension
 	α3 = -R_hip_foot + config.LEG_L
 
-	# Code if using the full five-bar linkage model
-	# # Angle between the leg links L1 and L2
-	# β = acos((config.LEG_L1 ^ 2 + config.LEG_L2 ^ 2 - R_hip_foot ^ 2) / (2 * config.LEG_L1 * config.LEG_L2))
+	return SVector(α1, α2, α3)
+end
 
-	# # Angle between the leg center of action and L1
-	# ψ = acos((config.LEG_L1 ^ 2 + R_hip_foot ^ 2 - config.LEG_L2) / (2 * config.LEG_L1 * R_hip_foot))
+function leg_explicitinversekinematics(r_body_foot::SVector{3, Float64}, i::Integer, config::PupperConfig)
+	assertValidLeg(i)
 
-	# # Angle of the first link relative to the tilted negative z axis
-	# α2 .= θ - ψ
+	# Unpack vector from body to foot
+	x, y, z = r_body_foot
 
-	# # Angle of the second link relative to the tilted negative z axis
-	# α3 .= α2 + (π - β)
+	# Distance from the hip to the foot, projected into the y-z plane
+	R_body_foot_yz = (y ^ 2 + z ^ 2) ^ 0.5
+
+	# Distance from the leg's forward/back point of rotation to the foot
+	R_hip_foot_yz = (R_body_foot_yz ^ 2 - config.ABDUCTION_OFFSET ^ 2) ^ 0.5
+
+	# Ensure that the target point is reachable
+	@assert R_body_foot_yz >= abs(config.ABDUCTION_OFFSET)
+
+	# Interior angle of the right triangle formed in the y-z plane by the leg that is coincident to the ab/adduction axis
+	# For feet 2 (front left) and 4 (back left), the abduction offset is positive, for the right feet, the abduction offset is negative.
+	ϕ = acos(config.ABDUCTION_OFFSETS[i] / R_body_foot_yz)
+
+	# Angle of the y-z projection of the hip-to-foot vector, relative to the positive y-axis 
+	θ_ = atan(z, y)
+
+	# Ab/adduction angle, relative to the positive y-axis
+	α1 = ϕ + θ_
+
+	# θ: Angle between the tilted negative z-axis and the hip-to-foot vector
+	θ = atan(-x, R_hip_foot_yz)
+
+	# Distance between the hip and foot
+	R_hip_foot = (R_hip_foot_yz ^ 2 + x ^ 2) ^ 0.5
+
+	# Angle between the line going from hip to foot and the link L1
+	ψ = acos((config.LEG_L1 ^ 2 + R_hip_foot ^ 2 - config.LEG_L2 ^ 2) / (2 * config.LEG_L1 * R_hip_foot))
+
+	# Angle of the first link relative to the tilted negative z axis
+	α2 = θ + ψ
+
+	# Angle between the leg links L1 and L2
+	β = acos((config.LEG_L1 ^ 2 + config.LEG_L2 ^ 2 - R_hip_foot ^ 2) / (2 * config.LEG_L1 * config.LEG_L2))
+
+	# Angle of the second link relative to the tilted negative z axis
+	α3 = α2 - (π - β)
 	return SVector(α1, α2, α3)
 end
 

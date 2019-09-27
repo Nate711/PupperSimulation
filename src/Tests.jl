@@ -22,7 +22,7 @@ function testInverseKinematicsExplicit!()
     println("\nTesting Inverse Kinematics")
     function testHelper(r, alpha_true, i; do_assert=true)
         eps = 1e-6
-        @time α = leg_explicitinversekinematics(r, i, config)
+        @time α = leg_explicitinversekinematics_prismatic(r, i, config)
         println("Leg ", i, ": r: ", r, " -> α: ", α)
         if do_assert
             @assert norm(α - alpha_true) < eps
@@ -39,6 +39,28 @@ function testInverseKinematicsExplicit!()
     testHelper(SVector(-c, -offset, -c), [0, pi/4, 0], 1)
     testHelper(SVector(config.LEG_L * sqrt(3)/2, offset, -config.LEG_L / 2), SVector(0, -pi/3, 0), 2)
 end
+
+function test_inversekinematics_linkage()
+    println("\n-------------- Testing Five-bar linkage inverse kinematics --------------")
+    config = PupperConfig()
+    function testHelper(r, alpha_true, i; do_assert=true)
+        eps = 1e-6
+        @time a = leg_explicitinversekinematics(r, i, config)
+        α = leg_explicitinversekinematics(r, i, config)
+        println("Leg ", i, ": r: ", r, " -> α: ", α)
+        if do_assert
+            @assert norm(α - alpha_true) < eps
+        end
+    end
+
+    c = config.LEG_L/sqrt(2)
+    offset = config.ABDUCTION_OFFSET
+    testHelper(SVector(0, offset, -0.125), missing, 2, do_assert=false)
+    testHelper(SVector(c, offset, -c), missing, 2, do_assert=false)
+    testHelper(SVector(-c, offset, -c), missing, 2, do_assert=false)
+    testHelper(SVector(0, c, -c), missing, 2, do_assert=false)
+end
+
 
 function testForwardKinematics!()
     println("\n-------------- Testing Forward Kinematics -----------")
@@ -76,7 +98,7 @@ function testForwardInverseAgreeance()
         leg = rand(1:4)
         @time r = legForwardKinematics(alpha, leg, config)
         # @code_warntype legForwardKinematics!(r, alpha, leg, config)
-        @time alpha_prime = leg_explicitinversekinematics(r, leg, config)
+        @time alpha_prime = leg_explicitinversekinematics_prismatic(r, leg, config)
         # @code_warntype inverseKinematicsExplicit!(alpha_prime, r, leg, config)
         println("Leg ", leg, ": α: ", round_(alpha, 3), " -> r_body_foot: ", round_(r, 3), " -> α': ", round_(alpha_prime, 3))
         @assert norm(alpha_prime - alpha) < eps
@@ -315,6 +337,7 @@ end
 # TestStanceController()
 # testStaticArrays()
 # TestSwingLegController()
+test_inversekinematics_linkage()
 
 # teststep()
-testrun()
+# testrun()
