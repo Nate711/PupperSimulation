@@ -24,7 +24,7 @@ function main()
     lastloop = Dates.Time(Dates.now())
     now = lastloop
     for i in 1:1000
-        stepcontroller!(piboard, pwmparams, servoparams, controller)
+        stepcontroller!(controller)
         sendservocommands(piboard, pwmparams, servoparams, controller.jointangles)
 
         while now - lastloop < controller.gaitparams.dt
