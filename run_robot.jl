@@ -27,10 +27,10 @@ function main()
         stepcontroller!(controller)
         sendservocommands(piboard, pwmparams, servoparams, controller.jointangles)
 
-        while now - lastloop < controller.gaitparams.dt
+        while now - lastloop < Nanosecond(Int(round(1e9*controller.gaitparams.dt)))
             now = Dates.Time(Dates.now())
         end
-	    println("Time since last loop: ", now - lastloop)
+	    println("Since last loop: ", (now - lastloop))
         lastloop = now
     end
 end
