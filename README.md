@@ -4,6 +4,10 @@
 This repository contains the Julia code that runs on the Raspberry Pi-based Pupper robot, as well as the Julia code for simulating the same code in a MuJoCo environment on a desktop computer. 
 
 ## Installation for Simulation
+0. Clone this repository
+```shell
+git clone https://github.com/Nate711/PupperSimulation.git
+```
 1. Acquire a license for MuJoCo at http://mujoco.org/. You can get a free trial of the professional license for a month, or with a student account, a free year.
 
 2. Save the license ```mjkey.txt``` somewhere and set the environment variable ```MUJOCO_KEY_PATH``` to that location. One way to set the environment variable is through your bash profile. On a mac this is done by adding the line
@@ -11,6 +15,13 @@ This repository contains the Julia code that runs on the Raspberry Pi-based Pupp
 export MUJOCO_KEY_PATH=[YOUR PATH]/mjkey.txt
 ```
 to your ~/.bash_profile.
+
+3. Install Julia by visiting https://julialang.org/downloads/
+
+4. Install the required Julia packages
+```shell
+julia install.jl
+```
 
 ## Run Simulation
 1. Enter the Julia REPL in the PupperJuliaSim directory.
