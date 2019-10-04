@@ -2,7 +2,7 @@ include("Types.jl")
 using PiGPIO
 
 @with_kw struct PWMParams
-    pins::Matrix{Int} = reshape([2,18,2,2,2,2,2,2,2,2,2,2], 3, 4)
+    pins::Matrix{Int} = reshape([12,18,24,2,2,2,2,2,2,2,2,2], 3, 4)
     range::Int = 4000
     frequency::Int = 250 # Hz
     min::Int = 1000 # minimum servo pulse width [us]
